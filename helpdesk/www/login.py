@@ -1,5 +1,6 @@
 import os
 import re
+from urllib.parse import quote, urlencode
 
 import frappe
 from frappe import _
@@ -13,7 +14,6 @@ STOCK_NAMES = {"frappe", "helpdesk", "erpnext"}
 
 # UI switches. Social sign-in (e.g. Microsoft) still works in the backend; flip this to show its button.
 SHOW_SOCIAL_LOGIN = False
-SHOW_EMAIL_LINK_LOGIN = True  # still follows the site's "login with email link" setting
 SUPPORT_EMAIL = "sriainfotech@gmail.com"  # override with site config `nxerp_support_url`
 
 no_cache = True
@@ -47,7 +47,11 @@ def get_context(context):
     context.nx_lang_name = _language_name(context.nx_lang_code)
     context.nx_support_url = _support_url()
     context.nx_show_social = SHOW_SOCIAL_LOGIN
-    context.nx_show_email_link = SHOW_EMAIL_LINK_LOGIN
+    # The email-link option is not offered; the social block only renders when switched on.
+    context.login_with_email_link = 0
+    if not SHOW_SOCIAL_LOGIN:
+        context.social_login = False
+        context.provider_logins = []
     return context
 
 
@@ -68,7 +72,10 @@ def _language_name(code):
 
 
 def _support_url():
-    """Target of "Contact IT Support": site config `nxerp_support_url` if set, else the support email."""
-    url = (frappe.conf.get("nxerp_support_url") or "").strip() or f"mailto:{SUPPORT_EMAIL}"
-    # only links a browser can open safely
-    return url if url.lower().startswith(("mailto:", "https://", "http://", "/")) else f"mailto:{SUPPORT_EMAIL}"
+    """"Contact IT Support" opens a Gmail compose window to the support address (works without a
+    desktop mail app). Site config `nxerp_support_url` can override it with any safe link."""
+    custom = (frappe.conf.get("nxerp_support_url") or "").strip()
+    if custom.lower().startswith(("mailto:", "https://", "http://", "/")):
+        return custom
+    query = urlencode({"view": "cm", "fs": 1, "to": SUPPORT_EMAIL, "su": f"{BRAND} IT Support"}, quote_via=quote)
+    return f"https://mail.google.com/mail/?{query}"

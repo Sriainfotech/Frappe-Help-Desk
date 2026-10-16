@@ -253,8 +253,6 @@ body[data-path="login"] footer { display: none !important; }
 .nx-shell .nx-card .page-card .page-card-body .social-logins.nx-empty { display: none !important; }
 .nx-shell .nx-card .page-card .page-card-body .social-logins .social-login-buttons { margin-top: 0; }
 .nx-shell .nx-card .page-card .page-card-body .social-logins .login-button-wrapper { min-width: 100%; padding: 0; margin-bottom: calc(var(--u) * 10); }
-.nx-shell.nx-no-email-link .nx-card .login-with-email-link.social-login-buttons { display: none !important; }
-.nx-shell .nx-card .btn-login-option svg.nx-mail { width: calc(var(--u) * 21); height: calc(var(--u) * 21); flex: none; fill: none; stroke: #323f57; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }  /* shown unless switched off in login.py */
 .nx-shell .nx-card .page-card .page-card-body .login-divider {
 	display: flex; align-items: center; gap: calc(var(--u) * 16); margin: 0 0 calc(var(--u) * 18);
 	font-size: calc(var(--u) * 14.5); line-height: 1.4; font-weight: 500; letter-spacing: 0; text-transform: none; color: #4a566d;
@@ -285,6 +283,76 @@ body[data-path="login"] footer { display: none !important; }
 .nx-shell .nx-card .indicator { font-size: calc(var(--u) * 14.5); }
 .nx-shell .nx-card .text-muted { color: var(--nx-muted) !important; }
 
+/* ================================================ interactions ===
+   Hover / focus / press feedback and small animations. Nothing here changes how the
+   page looks at rest. Disabled for visitors who prefer reduced motion. */
+@keyframes nx-draw { from { stroke-dashoffset: 60; } to { stroke-dashoffset: 0; } }
+@keyframes nx-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes nx-pop { 0% { transform: scale(.8); } 60% { transform: scale(1.14); } 100% { transform: scale(1); } }
+@keyframes nx-spin { to { transform: rotate(360deg); } }
+@keyframes nx-shake { 20%, 60% { transform: translateX(-5px); } 40%, 80% { transform: translateX(5px); } }
+
+/* hero: feature rows */
+.nx-features li { cursor: default; transition: transform .35s cubic-bezier(.2, .7, .2, 1); animation: nx-rise .6s cubic-bezier(.2, .7, .2, 1) backwards; animation-delay: calc(.3s + var(--i, 0) * .09s); }
+.nx-features li:nth-child(2) { --i: 1; } .nx-features li:nth-child(3) { --i: 2; } .nx-features li:nth-child(4) { --i: 3; }
+.nx-features li:hover { transform: translateX(8px); }
+.nx-ico { position: relative; transition: transform .4s cubic-bezier(.34, 1.56, .64, 1), box-shadow .3s; }
+.nx-ico::after { content: ""; position: absolute; inset: -3px; border-radius: 50%; border: 1.5px solid rgba(90, 170, 255, 0); transition: inset .35s, border-color .35s; pointer-events: none; }
+.nx-features li:hover .nx-ico { transform: scale(1.1); box-shadow: 0 8px 28px rgba(30, 130, 255, .7), inset 0 0 0 1.5px rgba(255, 255, 255, .38); }
+.nx-features li:hover .nx-ico::after { inset: -7px; border-color: rgba(90, 170, 255, .6); }
+.nx-ico svg { transition: transform .6s cubic-bezier(.2, .7, .2, 1); }
+.nx-ico svg path, .nx-ico svg circle { stroke-dasharray: 60; stroke-dashoffset: 0; }
+.nx-features li:hover .nx-ico svg path, .nx-features li:hover .nx-ico svg circle { animation: nx-draw .75s ease both; }
+.nx-features li:nth-child(2):hover .nx-ico svg { transform: rotate(90deg); }
+.nx-features strong, .nx-features small { transition: color .25s; }
+.nx-features li:hover small { color: #fff; }
+.nx-tagline::after { transform-origin: left; animation: nx-grow 1.1s .7s cubic-bezier(.2, .7, .2, 1) backwards; }
+.nx-pillars span { transition: color .2s; cursor: default; }
+.nx-pillars span:hover { color: #fff; }
+
+/* panel: language pill */
+.nx-lang { transition: transform .2s, box-shadow .2s, background .15s, border-color .15s; }
+.nx-lang:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(20, 60, 120, .14); }
+.nx-lang-globe, .nx-lang-chev { transition: transform .3s cubic-bezier(.2, .7, .2, 1); }
+.nx-lang:hover .nx-lang-globe { transform: rotate(25deg); }
+.nx-lang:focus-within .nx-lang-chev { transform: rotate(180deg); }
+
+/* panel: fields */
+.nx-shell .nx-card section .page-card .page-card-body input[type=text], .nx-shell .nx-card section .page-card .page-card-body input[type=email], .nx-shell .nx-card section .page-card .page-card-body input[type=password] { transition: border-color .2s, box-shadow .2s, transform .2s; }
+.nx-shell .nx-card section .page-card .page-card-body input:hover:not(:focus) { box-shadow: 0 3px 10px rgba(20, 50, 100, .08); }
+.nx-shell .nx-card section .page-card .page-card-body input:focus { transform: translateY(-1px); }
+.nx-shell .nx-card section .page-card .page-card-body #login_email:focus, .nx-shell .nx-card section .page-card .page-card-body #forgot_email:focus, .nx-shell .nx-card section .page-card .page-card-body #login_with_email_link_email:focus { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b5bfb' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5' width='18' height='14' rx='2.5'/%3E%3Cpath d='m3.5 7 8.5 6 8.5-6'/%3E%3C/svg%3E"); }
+.nx-shell .nx-card section .page-card .page-card-body #login_password:focus { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b5bfb' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4.5' y='10.5' width='15' height='10' rx='2.5'/%3E%3Cpath d='M8 10.5V8a4 4 0 0 1 8 0v2.5'/%3E%3C/svg%3E"); }
+.nx-shell .nx-card section .page-card .page-card-body .toggle-password { transition: background-color .15s, transform .15s; }
+.nx-shell .nx-card section .page-card .page-card-body .toggle-password:active { transform: translateY(-50%) scale(.88); }
+.nx-caps { position: absolute; right: calc(var(--u) * 58); top: 50%; transform: translateY(-50%) scale(.9); padding: calc(var(--u) * 3) calc(var(--u) * 10); border-radius: 999px;
+	background: #fff1cc; color: #8a5200; font-size: calc(var(--u) * 12); font-weight: 700; letter-spacing: .02em; pointer-events: none; opacity: 0; transition: opacity .15s, transform .15s; }
+.nx-caps.show { opacity: 1; transform: translateY(-50%) scale(1); }
+
+/* panel: checkbox and links */
+.nx-shell .nx-card section .page-card .page-card-body .nx-keep input:checked { animation: nx-pop .28s ease; }
+.nx-shell .nx-card section .page-card .page-card-body .nx-keep { transition: color .15s; }
+.nx-shell .nx-card section .page-card .page-card-body .forgot-password-message > a {
+	background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat; padding-bottom: 2px; transition: background-size .25s ease, color .15s; }
+.nx-shell .nx-card section .page-card .page-card-body .forgot-password-message > a:hover { text-decoration: none; background-size: 100% 1.5px; color: #0847c9; }
+.nx-help a { transition: color .15s, text-underline-offset .2s; }
+.nx-help a:hover { color: #0847c9; text-underline-offset: 6px; }
+
+/* panel: sign-in button (shine, press, spinner, error) */
+.nx-shell .nx-card .btn-login { position: relative; overflow: hidden; }
+.nx-shell .nx-card .btn-login::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 55%; pointer-events: none;
+	background: linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, .38) 50%, transparent 100%); transform: translateX(-140%) skewX(-18deg); }
+.nx-shell .nx-card .btn-login:hover::before { transition: transform .85s ease; transform: translateX(260%) skewX(-18deg); }
+.nx-shell .nx-card .btn-primary:active { transform: translateY(1px) scale(.992); }
+.nx-shell .nx-card .btn-login.nx-busy { pointer-events: none; }
+.nx-shell .nx-card section.for-login .btn-login.nx-busy::after {
+	width: calc(var(--u) * 18); height: calc(var(--u) * 18); background: none; border: 2.5px solid rgba(255, 255, 255, .35); border-top-color: #fff; border-radius: 50%; animation: nx-spin .7s linear infinite; }
+.nx-shell .nx-card .btn-login.nx-err { background: linear-gradient(90deg, #c4202e, #e8404f); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .25), 0 12px 22px -10px rgba(220, 38, 38, .6); animation: nx-shake .4s; }
+.nx-shell .nx-card section.for-login .btn-login.nx-err::after { display: none; }
+
+/* an old email-link address no longer leads anywhere */
+.nx-shell .nx-card section.for-login-with-email-link { display: none !important; }
+
 /* ===================================================== short windows */
 @media (max-height: 760px) and (min-width: 901px) {
 	.nx-features small { display: none; }
@@ -304,6 +372,6 @@ body[data-path="login"] footer { display: none !important; }
 @media (max-width: 380px) { .nx-shell { --u: .9px; } .nx-card { padding: 28px 18px 24px; } }
 
 @media (prefers-reduced-motion: reduce) {
-	.nx-hero-inner > *, .nx-card { animation: none; }
-	.nx-shell * { transition: none !important; }
+	.nx-shell *, .nx-shell *::before, .nx-shell *::after { animation: none !important; transition: none !important; }
+	.nx-features li:hover, .nx-features li:hover .nx-ico, .nx-lang:hover, .nx-shell input:focus { transform: none; }
 }
