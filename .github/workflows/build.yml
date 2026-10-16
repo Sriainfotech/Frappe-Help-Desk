@@ -28,11 +28,13 @@ jobs:
 
       # Image names on ghcr.io must be lowercase; the repo name isn't.
       # Helpdesk is built from this branch of this repo, so the image always matches the pushed code.
+      # Frappe is pinned to the release production runs: version-15 HEAD changed frappe/ui after
+      # 2026-10-10, which Helpdesk v1.30.2's frontend links in, and that breaks `bench build`.
       - name: Set image name and apps
         run: |
           echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
           echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
-          echo "FRAPPE_BRANCH=version-15" >> $GITHUB_ENV
+          echo "FRAPPE_BRANCH=v15.122.0" >> $GITHUB_ENV
           echo "[{\"url\": \"https://github.com/frappe/telephony\", \"branch\": \"develop\"}, {\"url\": \"https://github.com/${GITHUB_REPOSITORY}\", \"branch\": \"${GITHUB_REF_NAME}\"}]" > apps.json
           cat apps.json
 
