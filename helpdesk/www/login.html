@@ -19,7 +19,7 @@
 {% endblock %}
 
 {% block page_content %}
-<div class="nx-shell">
+<div class="nx-shell{% if not nx_show_social %} nx-no-social{% endif %}{% if not nx_show_email_link %} nx-no-email-link{% endif %}">
 
 	<aside class="nx-hero">
 		<div class="nx-art" aria-hidden="true"></div>
@@ -149,12 +149,16 @@
 				}
 			} catch (e) {}
 
-			// 4. "Or sign in with" + provider buttons (Microsoft etc.)
+			// 4. Alternative sign-in: provider buttons are off by default (see SHOW_SOCIAL_LOGIN in login.py)
 			try {
-				var providerBtns = document.querySelectorAll(".social-login-buttons:not(.login-with-email-link) .login-button-wrapper a.btn-login-option");
-				if (!providerBtns.length) {
+				var showSocial = {{ "true" if nx_show_social else "false" }}, showEmailLink = {{ "true" if nx_show_email_link else "false" }};
+				var providers = ".social-login-buttons:not(.login-with-email-link)";
+				if (!showSocial) each(providers, function (el) { el.remove(); });
+				var providerBtns = document.querySelectorAll(providers + " .login-button-wrapper a.btn-login-option");
+				var hasEmailLink = showEmailLink && document.querySelector(".login-with-email-link a");
+				if (!providerBtns.length && !hasEmailLink) {
 					each(".social-logins", function (el) { el.classList.add("nx-empty"); });
-				} else {
+				} else if (providerBtns.length) {
 					each(".login-divider", function (d) { d.textContent = {{ _("Or sign in with") | tojson }}; });
 					var ms = '<svg class="nx-ms" viewBox="0 0 23 23" aria-hidden="true"><path fill="#f25022" d="M1 1h10v10H1z"/><path fill="#7fba00" d="M12 1h10v10H12z"/><path fill="#00a4ef" d="M1 12h10v10H1z"/><path fill="#ffb900" d="M12 12h10v10H12z"/></svg>';
 					each(".social-login-buttons:not(.login-with-email-link) .login-button-wrapper a.btn-login-option", function (a) {
@@ -165,6 +169,10 @@
 						}
 					});
 				}
+				each(".login-with-email-link a", function (a) {
+					a.innerHTML = '<svg class="nx-mail" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>';
+					var t = document.createElement("span"); t.textContent = {{ _("Sign in with an email link") | tojson }}; a.appendChild(t);
+				});
 			} catch (e) {}
 
 			// 5. "Need help?" belongs under the sign-in form
