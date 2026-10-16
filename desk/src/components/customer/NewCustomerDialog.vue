@@ -46,7 +46,7 @@
           <FormControl
             type="text"
             :label="__('Domain')"
-            placeholder="frappe.io"
+            placeholder="example.com"
             v-model="state.domain"
           >
             <template #prefix>
