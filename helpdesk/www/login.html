@@ -1,10 +1,10 @@
 {#
 	NXERP login page.
 
-	This page EXTENDS Frappe's own login page instead of copying it, so every form,
-	field id, handler and script (login, forgot password, email link, 2FA, social
-	login, redirect-to) is still Frappe's code. This file only adds the NXERP
-	layout around it; the look is in public/css/nxerp-login.css.
+	This page EXTENDS the framework's own login page instead of copying it, so every
+	form, field id, handler and script (login, forgot password, email link, 2FA,
+	social login, redirect-to) is still the framework's code. This file only adds
+	the NXERP layout around it; the look lives in public/nxerp_login/css/nxerp-login.css.
 #}
 {% extends "frappe/www/login.html" %}
 
@@ -14,7 +14,7 @@
 
 {% block head_include %}
 {{ super() }}
-<meta name="theme-color" content="#06142e">
+<meta name="theme-color" content="#050f26">
 <link rel="stylesheet" href="/assets/helpdesk/nxerp_login/css/nxerp-login.css?v={{ nx_css_version }}">
 {% endblock %}
 
@@ -32,44 +32,24 @@
 			<div class="nx-hero-inner">
 				<img class="nx-hero-logo" src="/assets/helpdesk/nxerp_login/images/nxerp-logo-light.png" alt="{{ app_name | e }}">
 
-				<p class="nx-pillars">
-					<span>{{ _("People") }}</span><span>{{ _("Process") }}</span><span>{{ _("Technology") }}</span><span>{{ _("Growth") }}</span>
-				</p>
+				<div class="nx-hero-copy">
+					<h1 class="nx-headline">{{ _("Smarter systems") }}<br>{{ _("for a") }} <em>{{ _("brighter tomorrow") }}</em></h1>
+					<p class="nx-lede">{{ _("Integrated digital solutions to streamline your business and accelerate growth.") }}</p>
+				</div>
 
-				<h1 class="nx-headline">
-					{{ _("Smarter Systems") }}<br>
-					{{ _("for a") }} <em>{{ _("Brighter Tomorrow") }}</em>
-				</h1>
-				<p class="nx-lede">{{ _("Integrated digital solutions to streamline your business and accelerate growth.") }}</p>
-
-				<ul class="nx-features">
-					<li>
-						<span class="nx-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg></span>
-						<div><strong>{{ _("Unified Operations") }}</strong><small>{{ _("Finance") }} | {{ _("Sales") }} | {{ _("Projects") }} | {{ _("People") }}</small></div>
-					</li>
-					<li>
-						<span class="nx-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></svg></span>
-						<div><strong>{{ _("Simplify Processes") }}</strong><small>{{ _("Automate") }} | {{ _("Optimize") }} | {{ _("Grow") }}</small></div>
-					</li>
-					<li>
-						<span class="nx-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 5.2a3.2 3.2 0 0 1 0 5.6M18 14.4c2 .8 3.4 2.8 3.4 5.1"/></svg></span>
-						<div><strong>{{ _("Empower Teams") }}</strong><small>{{ _("Connect") }} | {{ _("Collaborate") }} | {{ _("Succeed") }}</small></div>
-					</li>
-					<li>
-						<span class="nx-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8 4.5 5.7v5.6c0 4.6 3.1 8.4 7.5 9.9 4.4-1.5 7.5-5.3 7.5-9.9V5.7L12 2.8Z"/><path d="m8.8 12 2.2 2.2 4.3-4.4"/></svg></span>
-						<div><strong>{{ _("Built for What's Next") }}</strong><small>{{ _("Secure") }} | {{ _("Scalable") }} | {{ _("Future Ready") }}</small></div>
-					</li>
-				</ul>
-
-				<p class="nx-tagline">{{ _("More Than ERP.") }}<br>{{ _("A Smarter Way Forward.") }}</p>
+				<div class="nx-hero-foot">
+					<div class="nx-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+					<p class="nx-pillars">
+						<span>{{ _("People") }}</span><span>{{ _("Process") }}</span><span>{{ _("Technology") }}</span><span>{{ _("Growth") }}</span>
+					</p>
+					<p class="nx-copy">&copy; {{ nx_year }} {{ app_name | e }}. {{ _("All rights reserved.") }}</p>
+				</div>
 			</div>
-
-			<p class="nx-copy">&copy; {{ nx_year }} {{ app_name | e }}. {{ _("All rights reserved.") }}</p>
 		</aside>
 
 		<main class="nx-panel">
 			<div class="nx-card">
-				{# Frappe's own login page content (all sections and forms) #}
+				{# The framework's own login page content (all sections and forms) #}
 				{{ super() }}
 			</div>
 			<p class="nx-panel-foot">{{ _("Powering Business Through Digital Infrastructure.") }}</p>
@@ -82,21 +62,28 @@
 {% block script %}
 {{ super() }}
 <script>
-	// Cosmetic only: friendlier heading on the main sign-in section.
-	// If anything here fails the default heading simply stays.
+	// Cosmetic only: clearer headings/sub-lines. If anything here fails, the
+	// default headings simply stay.
 	(function () {
 		try {
-			var head = document.querySelector(".for-login .page-card-head");
-			if (!head) return;
-			var title = head.querySelector("h4");
-			if (title) title.textContent = {{ _("Welcome Back") | tojson }};
-			if (!head.querySelector(".nx-sub")) {
-				var sub = document.createElement("p");
-				sub.className = "nx-sub";
-				sub.textContent = {{ _("Sign in to your account") | tojson }};
-				head.appendChild(sub);
-			}
-		} catch (e) { /* keep stock heading */ }
+			var copy = {
+				"for-login": [{{ _("Welcome back") | tojson }}, {{ _("Sign in to your account to continue.") | tojson }}],
+				"for-forgot": [null, {{ _("Enter your email and we'll send you a reset link.") | tojson }}],
+				"for-login-with-email-link": [null, {{ _("We'll email you a secure link to sign in.") | tojson }}]
+			};
+			Object.keys(copy).forEach(function (cls) {
+				var head = document.querySelector("section." + cls + " .page-card-head");
+				if (!head) return;
+				var title = head.querySelector("h4");
+				if (title && copy[cls][0]) title.textContent = copy[cls][0];
+				if (!head.querySelector(".nx-sub")) {
+					var sub = document.createElement("p");
+					sub.className = "nx-sub";
+					sub.textContent = copy[cls][1];
+					head.appendChild(sub);
+				}
+			});
+		} catch (e) { /* keep default headings */ }
 	})();
 </script>
 {% endblock %}
