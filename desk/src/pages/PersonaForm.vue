@@ -161,7 +161,7 @@ const questions = [
   {
     key: "preferred_channels",
     title: __(
-      "How would you like your customers to create support tickets in Frappe Helpdesk?"
+      "How would you like your customers to create support tickets in NXERP?"
     ),
     type: "choice",
     multiple: true,
@@ -207,22 +207,22 @@ const questions = [
   },
   {
     key: "referral_source",
-    title: __("How did you hear about Frappe Helpdesk?"),
+    title: __("How did you hear about NXERP?"),
     type: "choice",
     options: [
       { label: __("GitHub"), value: "github" },
       { label: __("Google Ads"), value: "google_ads" },
       { label: __("YouTube"), value: "youtube" },
-      { label: __("Frappe Discuss"), value: "frappe_discuss" },
+      { label: __("Community forum"), value: "frappe_discuss" },
       {
-        label: __("Another Frappe product (ERPNext, Frappe Cloud, etc.)"),
+        label: __("Another NXERP product"),
         value: "frappe_product",
       },
       { label: __("LinkedIn"), value: "linkedin" },
       { label: __("X (Twitter)"), value: "x" },
       { label: __("Reddit"), value: "reddit" },
       { label: __("A friend or colleague"), value: "word_of_mouth" },
-      { label: __("A Frappe partner or consultant"), value: "partner" },
+      { label: __("A partner or consultant"), value: "partner" },
       { label: __("An event or conference"), value: "event" },
       { label: __("Other"), value: "other" },
     ],
@@ -230,7 +230,7 @@ const questions = [
   },
   {
     key: "first_goal",
-    title: __("What would you like to do first in Frappe Helpdesk?"),
+    title: __("What would you like to do first in NXERP?"),
     type: "choice",
     options: [
       { label: __("Connect my support email"), value: "connect_email" },
@@ -242,5 +242,5 @@ const questions = [
   },
 ] satisfies Question[];
 
-usePageMeta(() => ({ title: __("Welcome to Frappe Helpdesk") }));
+usePageMeta(() => ({ title: __("Welcome to NXERP") }));
 </script>

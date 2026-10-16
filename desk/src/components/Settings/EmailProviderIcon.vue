@@ -7,7 +7,7 @@
     <LucideMail v-else class="size-4.5 text-ink-gray-7" />
   </div>
   <p v-if="serviceName" class="text-center text-p-xs text-ink-gray-7">
-    {{ serviceName }}
+    {{ displayName }}
   </p>
 </template>
 
@@ -27,6 +27,8 @@ const props = withDefaults(defineProps<P>(), {
 });
 
 const logoValue = computed(() => props.logo);
+// stored service ids stay as they are; only the label shown to people changes
+const displayName = computed(() => (props.serviceName === "Frappe Mail" ? "NXERP Mail" : props.serviceName));
 </script>
 
 <style scoped></style>
