@@ -1,4 +1,5 @@
 import os
+import re
 
 import frappe
 from frappe import _
@@ -37,6 +38,9 @@ def get_context(context):
 
     context.nx_year = frappe.utils.now_datetime().year
     context.nx_css_version = _asset_version("css/nxerp-login.css")
+    context.nx_lang_code = frappe.local.lang or "en"
+    context.nx_lang_name = _language_name(context.nx_lang_code)
+    context.nx_support_url = _support_url()
     return context
 
 
@@ -46,3 +50,26 @@ def _asset_version(relative_path):
         return int(os.path.getmtime(path))
     except Exception:
         return 1
+
+
+def _language_name(code):
+    try:
+        name = frappe.db.get_value("Language", code, "language_name") or "English"
+        return re.sub(r"\s*\(.*\)\s*$", "", name)  # "English (United States)" -> "English"
+    except Exception:
+        return "English"
+
+
+def _support_url():
+    """Target of "Contact IT Support". Nothing is invented: it comes from site
+    config (`nxerp_support_url`, e.g. a mailto: or https: link) or, failing that,
+    the address in Contact Us Settings. If neither is set the line is not shown."""
+    try:
+        url = (frappe.conf.get("nxerp_support_url") or "").strip()
+        if not url:
+            email = frappe.db.get_single_value("Contact Us Settings", "forward_to_email")
+            url = f"mailto:{email.strip()}" if email else ""
+        # only links a browser can open safely
+        return url if url.lower().startswith(("mailto:", "https://", "http://", "/")) else ""
+    except Exception:
+        return ""
