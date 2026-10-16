@@ -48,7 +48,7 @@
     v-model="showHelpModal"
     v-model:articles="articles"
     appName="helpdesk"
-    title="Frappe Helpdesk"
+    title="NXERP"
     :logo="logo"
     docsLink="https://docs.frappe.io/helpdesk"
     :afterSkip="(step: string) => capture('onboarding_step_skipped_' + step)"
@@ -172,7 +172,7 @@ const agentPortalDropdown = computed(() => [
     onClick: () => window.open("https://docs.frappe.io/helpdesk"),
   },
   {
-    label: __("Login to Frappe Cloud"),
+    label: __("Open hosting dashboard"),
     icon: FrappeCloudIcon,
     onClick: () => confirmLoginToFrappeCloud(),
     condition: () => !isMobileView.value && window.is_fc_site,
@@ -423,7 +423,7 @@ const articles = ref([
     ],
   },
   {
-    title: __("Frappe Helpdesk Mobile"),
+    title: __("NXERP Mobile"),
     opened: false,
     subArticles: [
       { name: "pwa-installation", title: __("Mobile App Installation") },

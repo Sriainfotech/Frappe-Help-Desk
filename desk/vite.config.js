@@ -57,11 +57,10 @@ export default defineConfig(async ({ mode }) => {
         },
         manifest: {
           display: "standalone",
-          name: "Frappe Helpdesk",
-          short_name: "Helpdesk",
+          name: "NXERP",
+          short_name: "NXERP",
           start_url: "/helpdesk",
-          description:
-            "Modern, Streamlined, Free and Open Source Customer Service Software",
+          description: "NXERP - Smarter Systems for a Brighter Tomorrow",
           icons: [
             {
               src: "/assets/helpdesk/desk/manifest/manifest-icon-192.maskable.png",

@@ -9,7 +9,7 @@ Hey {{ first_name }} 👋,
 <br><br>
 We thought we'd use this space to give you a quick walkthrough while you're here. 🙂
 <br><br>
-This is a sample ticket we created to show you how Frappe Helpdesk works.
+This is a sample ticket we created to show you how NXERP works.
 <br><br>
 Getting started is easy. In the main <b>Ticket activity area</b>, when you reply to a ticket your response shows up directly below in the activity thread. This way you can keep track of all your ticket activities in one single place. ✨
 <br>
@@ -43,10 +43,10 @@ What you can do next:<br>
 <br>
 Feel free to click around and explore our product.
 <br><br>
-If you need help, reach out to us here: <a href="https://support.frappe.io/helpdesk" style="color: #3b82f6;">https://support.frappe.io/helpdesk</a>
+If you need help, reach out to your NXERP IT support team.
 <br><br>
 Cheers,<br>
-Team Frappe
+Team NXERP
 </div>
 """
 
