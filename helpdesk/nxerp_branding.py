@@ -2,9 +2,9 @@ import frappe
 
 BRAND = "NXERP"
 ASSETS = "/assets/helpdesk/nxerp_login/images"
-LOGO = f"{ASSETS}/nxerp-logo.png"  # wide logo: login, desk, website
+LOGO = f"{ASSETS}/nxerp-wordmark.png"  # wide logo: login, desk, website
 MARK = f"{ASSETS}/nxerp-mark.png"  # square mark: the app's small sidebar slot
-FAVICON = f"{ASSETS}/favicon.png"
+FAVICON = f"{ASSETS}/nxerp-favicon.png"
 
 
 def apply_branding():

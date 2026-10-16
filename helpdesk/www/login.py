@@ -7,8 +7,8 @@ from frappe.www.login import get_context as frappe_login_context
 
 BRAND = "NXERP"
 ASSETS = "/assets/helpdesk/nxerp_login"
-LOGO = f"{ASSETS}/images/nxerp-logo.png"
-FAVICON = f"{ASSETS}/images/favicon.png"
+LOGO = f"{ASSETS}/images/nxerp-wordmark.png"
+FAVICON = f"{ASSETS}/images/nxerp-favicon.png"
 STOCK_NAMES = {"frappe", "helpdesk", "erpnext"}
 
 no_cache = True
@@ -25,7 +25,7 @@ def get_context(context):
         context.app_name = BRAND
 
     logo = context.get("logo") or ""
-    if not logo or logo.startswith("/assets/frappe/"):
+    if not logo or logo.startswith("/assets/frappe/") or "nxerp" in logo.lower():
         context.logo = LOGO
     context.favicon = FAVICON
 
