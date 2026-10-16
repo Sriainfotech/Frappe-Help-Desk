@@ -253,7 +253,8 @@ body[data-path="login"] footer { display: none !important; }
 .nx-shell .nx-card .page-card .page-card-body .social-logins.nx-empty { display: none !important; }
 .nx-shell .nx-card .page-card .page-card-body .social-logins .social-login-buttons { margin-top: 0; }
 .nx-shell .nx-card .page-card .page-card-body .social-logins .login-button-wrapper { min-width: 100%; padding: 0; margin-bottom: calc(var(--u) * 10); }
-.nx-shell .nx-card .login-with-email-link.social-login-buttons { display: none !important; }  /* not part of the design */
+.nx-shell.nx-no-email-link .nx-card .login-with-email-link.social-login-buttons { display: none !important; }
+.nx-shell .nx-card .btn-login-option svg.nx-mail { width: calc(var(--u) * 21); height: calc(var(--u) * 21); flex: none; fill: none; stroke: #323f57; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }  /* shown unless switched off in login.py */
 .nx-shell .nx-card .page-card .page-card-body .login-divider {
 	display: flex; align-items: center; gap: calc(var(--u) * 16); margin: 0 0 calc(var(--u) * 18);
 	font-size: calc(var(--u) * 14.5); line-height: 1.4; font-weight: 500; letter-spacing: 0; text-transform: none; color: #4a566d;

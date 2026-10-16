@@ -11,6 +11,11 @@ LOGO = f"{ASSETS}/images/nxerp-wordmark.png"
 FAVICON = f"{ASSETS}/images/nxerp-favicon.png"
 STOCK_NAMES = {"frappe", "helpdesk", "erpnext"}
 
+# UI switches. Social sign-in (e.g. Microsoft) still works in the backend; flip this to show its button.
+SHOW_SOCIAL_LOGIN = False
+SHOW_EMAIL_LINK_LOGIN = True  # still follows the site's "login with email link" setting
+SUPPORT_EMAIL = "sriainfotech@gmail.com"  # override with site config `nxerp_support_url`
+
 no_cache = True
 
 
@@ -41,6 +46,8 @@ def get_context(context):
     context.nx_lang_code = frappe.local.lang or "en"
     context.nx_lang_name = _language_name(context.nx_lang_code)
     context.nx_support_url = _support_url()
+    context.nx_show_social = SHOW_SOCIAL_LOGIN
+    context.nx_show_email_link = SHOW_EMAIL_LINK_LOGIN
     return context
 
 
@@ -61,15 +68,7 @@ def _language_name(code):
 
 
 def _support_url():
-    """Target of "Contact IT Support". Nothing is invented: it comes from site
-    config (`nxerp_support_url`, e.g. a mailto: or https: link) or, failing that,
-    the address in Contact Us Settings. If neither is set the line is not shown."""
-    try:
-        url = (frappe.conf.get("nxerp_support_url") or "").strip()
-        if not url:
-            email = frappe.db.get_single_value("Contact Us Settings", "forward_to_email")
-            url = f"mailto:{email.strip()}" if email else ""
-        # only links a browser can open safely
-        return url if url.lower().startswith(("mailto:", "https://", "http://", "/")) else ""
-    except Exception:
-        return ""
+    """Target of "Contact IT Support": site config `nxerp_support_url` if set, else the support email."""
+    url = (frappe.conf.get("nxerp_support_url") or "").strip() or f"mailto:{SUPPORT_EMAIL}"
+    # only links a browser can open safely
+    return url if url.lower().startswith(("mailto:", "https://", "http://", "/")) else f"mailto:{SUPPORT_EMAIL}"
