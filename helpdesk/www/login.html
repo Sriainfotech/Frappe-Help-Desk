@@ -23,7 +23,6 @@
 
 	<aside class="nx-hero">
 		<div class="nx-art" aria-hidden="true"></div>
-		<p class="nx-ghost" aria-hidden="true">{{ _("People") }} <b></b> {{ _("Growth") }}</p>
 
 		<div class="nx-hero-inner">
 			<header class="nx-brand">
@@ -31,6 +30,7 @@
 				<p class="nx-brand-tag">{{ _("Smarter Business. Stronger Tomorrow.") }}</p>
 			</header>
 
+			<div class="nx-hero-main">
 			<p class="nx-pillars">
 				<span>{{ _("People") }}</span><span>{{ _("Process") }}</span><span>{{ _("Technology") }}</span><span>{{ _("Growth") }}</span>
 			</p>
@@ -58,13 +58,13 @@
 			</ul>
 
 			<p class="nx-tagline">{{ _("More Than ERP.") }}<br>{{ _("A Smarter Way Forward.") }}</p>
-			<i class="nx-underline" aria-hidden="true"></i>
-		</div>
+			</div>
 
-		<p class="nx-copy">&copy; {{ nx_year }} {{ app_name | e }}. {{ _("All rights reserved.") }}</p>
+			<p class="nx-copy">&copy; {{ nx_year }} {{ app_name | e }}. {{ _("All rights reserved.") }}</p>
+		</div>
 	</aside>
 
-	<main class="nx-panel"><div class="nx-pstage">
+	<main class="nx-panel">
 		<div class="nx-top">
 			<label class="nx-lang">
 				<svg class="nx-lang-globe" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.5 4 5.6 4 9s-1.4 6.5-4 9c-2.6-2.5-4-5.6-4-9s1.4-6.5 4-9Z"/></svg>
@@ -74,7 +74,6 @@
 				</select>
 				<svg class="nx-lang-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
 			</label>
-			<i class="nx-topbar" aria-hidden="true"></i>
 		</div>
 
 		<div class="nx-card">
@@ -86,8 +85,8 @@
 			{% endif %}
 		</div>
 
-		<p class="nx-panel-foot"><i aria-hidden="true"></i><span>{{ _("Powering Business Through Digital Infrastructure.") }}</span></p>
-	</div></main>
+		<p class="nx-panel-foot">{{ _("Powering Business Through Digital Infrastructure.") }}</p>
+	</main>
 
 </div>
 {% endblock %}
