@@ -1,323 +1,274 @@
-/* NXERP login page.
-   Styling only. All selectors are scoped under .nx-shell so nothing else on
-   the site is affected. The form markup, ids and classes are left untouched. */
+/* NXERP login - minimal, high-end.
+   Design rules: one accent colour, a 3-step type scale, an 8px spacing grid,
+   hairline borders, no gradients/glows on controls, generous whitespace.
+   All selectors are scoped under .nx-shell. Form markup/ids/classes are untouched. */
 
 .nx-shell {
-	--nx-navy: #06142e;
-	--nx-navy-2: #0a1f4d;
-	--nx-blue: #0560fb;
-	--nx-blue-dark: #0449c4;
-	--nx-blue-soft: #4c8dff;
-	--nx-ink: #0f172a;
+	/* colour */
+	--nx-ink: #0b1220;
+	--nx-ink-2: #334155;
 	--nx-muted: #64748b;
-	--nx-line: #d9e1ee;
-	--nx-panel: #eef2f9;
-	--nx-radius: 10px;
+	--nx-faint: #94a3b8;
+	--nx-line: #e2e8f0;
+	--nx-line-strong: #cbd5e1;
+	--nx-surface: #ffffff;
+	--nx-accent: #0560fb;
+	--nx-accent-hover: #0449c4;
+	--nx-danger: #dc2626;
+	--nx-night: #050f26;
+	/* shape */
+	--nx-radius: 8px;
+	--nx-ease: cubic-bezier(.2, .7, .2, 1);
 
 	position: fixed;
 	inset: 0;
 	z-index: 50;
 	overflow-y: auto;
-	background: var(--nx-panel);
-	font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	background: var(--nx-surface);
 	color: var(--nx-ink);
+	font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	font-feature-settings: "cv11", "ss01";
 	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
 }
-.nx-shell *,
-.nx-shell *::before,
-.nx-shell *::after { box-sizing: border-box; }
+.nx-shell *, .nx-shell *::before, .nx-shell *::after { box-sizing: border-box; }
 
-/* Hide any stock chrome that could sit behind the shell */
 body[data-path="login"] .navbar,
 body[data-path="login"] .web-footer,
 body[data-path="login"] footer { display: none !important; }
 
 .nx-cols { display: flex; min-height: 100%; }
 
-/* ------------------------------------------------------------------ hero */
+/* =============================================================== hero */
 .nx-hero {
 	position: relative;
-	flex: 1 1 54%;
+	flex: 1 1 55%;
 	min-width: 0;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	padding: 44px 56px 28px;
 	color: #fff;
 	overflow: hidden;
-	background:
-		radial-gradient(900px 600px at 85% 95%, rgba(5, 96, 251, .28), transparent 60%),
-		linear-gradient(155deg, var(--nx-navy) 0%, var(--nx-navy-2) 100%);
+	background: var(--nx-night);
 }
-.nx-slides { position: absolute; inset: 0; z-index: 0; }
+.nx-slides { position: absolute; inset: 0; }
 .nx-slide {
-	position: absolute;
-	inset: 0;
+	position: absolute; inset: 0;
 	opacity: 0;
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: center;
-	animation: nx-fade 24s infinite;
+	background-size: cover; background-position: center; background-repeat: no-repeat;
+	animation: nx-slide 24s infinite;
 }
-.nx-slide-1 { background-image: url("/assets/helpdesk/nxerp_login/images/bg-skyline.webp"); background-position: center; background-size: cover; animation-delay: 0s; }
+.nx-slide-1 { background-image: url("/assets/helpdesk/nxerp_login/images/bg-skyline.webp"); animation-delay: 0s; }
 .nx-slide-2 { background-image: url("/assets/helpdesk/nxerp_login/images/bg-control-room.webp"); animation-delay: 8s; }
 .nx-slide-3 { background-image: url("/assets/helpdesk/nxerp_login/images/bg-office.webp"); animation-delay: 16s; }
-@keyframes nx-fade {
-	0% { opacity: 0; }
-	5% { opacity: 1; }
-	33.3% { opacity: 1; }
-	38.3% { opacity: 0; }
-	100% { opacity: 0; }
+@keyframes nx-slide {
+	0%      { opacity: 0; transform: scale(1.06); }
+	5%      { opacity: 1; }
+	33.3%   { opacity: 1; transform: scale(1); }
+	38.3%   { opacity: 0; transform: scale(1); }
+	100%    { opacity: 0; transform: scale(1); }
 }
-/* dark wash keeps the copy readable over any photo */
+/* calm, even wash: text stays legible on every photo */
 .nx-hero::after {
-	content: "";
-	position: absolute;
-	inset: 0;
-	z-index: 1;
+	content: ""; position: absolute; inset: 0;
 	background:
-		linear-gradient(100deg, rgba(5, 16, 40, .93) 0%, rgba(6, 22, 56, .72) 45%, rgba(6, 26, 70, .30) 100%),
-		linear-gradient(0deg, rgba(5, 16, 40, .70) 0%, transparent 30%);
-}
-.nx-hero-inner, .nx-copy { position: relative; z-index: 2; }
-
-.nx-hero-logo { display: block; height: 46px; width: auto; margin-bottom: 34px; }
-
-.nx-pillars {
-	display: flex; flex-wrap: wrap; gap: 0;
-	margin: 0 0 26px; padding: 0;
-	font-size: 15px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
-}
-.nx-pillars span + span::before {
-	content: "|"; display: inline-block; margin: 0 14px; color: rgba(255, 255, 255, .45); font-weight: 400;
+		linear-gradient(90deg, rgba(5, 15, 38, .94) 0%, rgba(5, 15, 38, .72) 55%, rgba(5, 15, 38, .40) 100%),
+		linear-gradient(0deg, rgba(5, 15, 38, .85) 0%, rgba(5, 15, 38, 0) 38%);
 }
 
+.nx-hero-inner {
+	position: relative; z-index: 2;
+	height: 100%; min-height: 100vh;
+	display: flex; flex-direction: column; justify-content: space-between;
+	padding: 48px 64px 40px;
+}
+.nx-hero-logo { display: block; height: 40px; width: auto; align-self: flex-start; }
+
+.nx-hero-copy { max-width: 640px; }
 .nx-headline {
-	margin: 0 0 14px;
-	font-size: clamp(30px, 3.4vw, 46px);
-	line-height: 1.12;
-	font-weight: 800;
-	letter-spacing: -.02em;
+	margin: 0;
+	font-size: clamp(30px, 3.3vw, 50px);
+	line-height: 1.08;
+	font-weight: 600;
+	letter-spacing: -.035em;
 	color: #fff;
 }
-.nx-headline em {
-	font-style: normal;
-	background: linear-gradient(90deg, #2f80ff, #62b0ff);
-	-webkit-background-clip: text; background-clip: text;
-	-webkit-text-fill-color: transparent; color: transparent;
+.nx-headline em { font-style: normal; color: #7db2ff; }
+.nx-lede {
+	max-width: 420px; margin: 20px 0 0;
+	font-size: 16px; line-height: 1.6; font-weight: 400;
+	color: rgba(255, 255, 255, .68);
 }
-.nx-lede { max-width: 520px; margin: 0 0 30px; font-size: 15px; line-height: 1.55; color: rgba(255, 255, 255, .82); }
 
-.nx-features { list-style: none; margin: 0 0 34px; padding: 0; display: grid; gap: 16px; }
-.nx-features li { display: flex; align-items: center; gap: 16px; margin: 0; }
-.nx-ico {
-	flex: 0 0 52px; width: 52px; height: 52px; border-radius: 50%;
-	display: grid; place-items: center;
-	background: linear-gradient(145deg, #0a5cf0, #0a47c2);
-	box-shadow: 0 6px 20px rgba(5, 96, 251, .35), inset 0 0 0 1px rgba(255, 255, 255, .18);
+.nx-hero-foot { display: grid; gap: 20px; }
+.nx-dots { display: flex; gap: 8px; }
+.nx-dots i { position: relative; width: 32px; height: 2px; border-radius: 2px; background: rgba(255, 255, 255, .22); overflow: hidden; }
+.nx-dots i::after {
+	content: ""; position: absolute; inset: 0; background: #fff;
+	transform: scaleX(0); transform-origin: left;
+	animation: nx-progress 24s linear infinite;
 }
-.nx-ico svg { width: 24px; height: 24px; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.nx-features strong { display: block; font-size: 16px; font-weight: 700; color: #fff; }
-.nx-features small { display: block; margin-top: 2px; font-size: 12.5px; color: rgba(255, 255, 255, .7); }
-
-.nx-tagline {
-	margin: 0; font-size: 26px; line-height: 1.2; font-style: italic; font-weight: 800; letter-spacing: -.01em;
-	color: #fff; padding-bottom: 12px; border-bottom: 3px solid var(--nx-blue-soft); display: inline-block;
+.nx-dots i:nth-child(2)::after { animation-delay: 8s; }
+.nx-dots i:nth-child(3)::after { animation-delay: 16s; }
+@keyframes nx-progress {
+	0%     { transform: scaleX(0); }
+	33.3%  { transform: scaleX(1); }
+	33.4%  { transform: scaleX(0); }
+	100%   { transform: scaleX(0); }
 }
-.nx-copy { margin: 28px 0 0; font-size: 12px; color: rgba(255, 255, 255, .6); }
+.nx-pillars {
+	display: flex; flex-wrap: wrap; gap: 6px 20px; margin: 0; padding: 0;
+	font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
+	color: rgba(255, 255, 255, .55);
+}
+.nx-copy { margin: 0; font-size: 12px; color: rgba(255, 255, 255, .4); }
 
-/* ----------------------------------------------------------------- panel */
+/* ============================================================== panel */
 .nx-panel {
-	flex: 1 1 46%;
-	min-width: 0;
-	display: flex; flex-direction: column; align-items: center; justify-content: center;
-	padding: 40px 24px 24px;
-	background:
-		radial-gradient(700px 500px at 100% 0%, rgba(5, 96, 251, .08), transparent 60%),
-		var(--nx-panel);
+	flex: 1 1 45%; min-width: 0;
+	display: flex; flex-direction: column; align-items: center;
+	padding: 48px 40px 28px;
+	background: var(--nx-surface);
 }
 .nx-card {
-	width: 100%; max-width: 440px;
-	background: #fff;
-	border-radius: 20px;
-	padding: 40px 40px 32px;
-	box-shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 20px 50px -12px rgba(10, 31, 77, .18);
-	border: 1px solid rgba(217, 225, 238, .7);
+	flex: 1 0 auto;
+	width: 100%; max-width: 380px;
+	display: flex; flex-direction: column; justify-content: center;
+	animation: nx-rise .6s var(--nx-ease) both;
 }
-.nx-panel-foot { margin: 22px 0 0; font-size: 12px; color: var(--nx-muted); text-align: center; }
+@keyframes nx-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.nx-panel-foot { margin: 32px 0 0; font-size: 12px; color: var(--nx-faint); text-align: center; }
 
-/* ----- flatten the default card/box chrome inside our card ----- */
-.nx-card section { margin: 0; padding: 0; background: none; box-shadow: none; border: 0; width: 100%; max-width: none; }
-.nx-card .page-card,
-.nx-card .login-content {
-	width: 100% !important; max-width: none !important;
-	margin: 0 !important; padding: 0 !important;
-	background: transparent !important; box-shadow: none !important; border: 0 !important; border-radius: 0 !important;
-}
-.nx-card .page-card-head { text-align: center; padding: 0 0 22px; margin: 0; }
-.nx-card .page-card-head .app-logo { display: block; margin: 0 auto 18px; height: 44px; width: auto; max-width: 210px; object-fit: contain; }
-.nx-card .page-card-head h4 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -.01em; color: var(--nx-ink); }
-.nx-card .page-card-head .nx-sub { margin: 6px 0 0; font-size: 14px; color: var(--nx-muted); }
-
-/* ------------------------------------------------------------- form bits */
-.nx-card .page-card-body { padding: 0; }
-.nx-card .form-group { margin: 0 0 14px; }
-.nx-card .email-field,
-.nx-card .password-field { position: relative; }
-.nx-card .form-control {
-	display: block; width: 100%; height: 48px;
-	padding: 0 16px 0 44px;
-	font-size: 14.5px; color: var(--nx-ink);
-	background: #fff;
-	border: 1px solid var(--nx-line);
-	border-radius: var(--nx-radius);
-	box-shadow: none;
-	transition: border-color .15s, box-shadow .15s;
-}
-.nx-card .password-field .form-control { padding-right: 64px; }
-.nx-card .form-control::placeholder { color: #94a3b8; }
-.nx-card .form-control:focus {
-	outline: none; background: #fff;
-	border-color: var(--nx-blue);
-	box-shadow: 0 0 0 4px rgba(5, 96, 251, .12);
-}
-.nx-card .field-icon {
-	position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
-	width: 18px; height: 18px; color: #94a3b8; stroke: #94a3b8; pointer-events: none;
-}
-.nx-card .toggle-password {
-	position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-	font-size: 12.5px; font-weight: 600; color: var(--nx-blue) !important; cursor: pointer; user-select: none;
-}
-.nx-card .toggle-password:hover { color: var(--nx-blue-dark) !important; }
-
-.nx-card .forgot-password-message { margin: 2px 0 20px; text-align: right; }
-.nx-card .forgot-password-message a { font-size: 13px; font-weight: 600; color: var(--nx-blue); text-decoration: none; }
-.nx-card .forgot-password-message a:hover { text-decoration: underline; }
-
-.nx-card .page-card-actions { padding: 0; margin: 0; }
-.nx-card .btn-primary,
-.nx-card .btn-login,
-.nx-card .btn-forgot,
-.nx-card .btn-ldap-login {
-	display: flex; align-items: center; justify-content: center; gap: 8px;
-	width: 100%; height: 48px; padding: 0 18px;
-	font-size: 15px; font-weight: 700; letter-spacing: .01em; color: #fff;
-	background: linear-gradient(180deg, #1470ff 0%, var(--nx-blue) 100%);
-	border: 0; border-radius: var(--nx-radius);
-	box-shadow: 0 8px 20px -6px rgba(5, 96, 251, .55);
-	transition: transform .12s, box-shadow .15s, filter .15s;
-}
-.nx-card .btn-primary:hover { filter: brightness(1.06); box-shadow: 0 10px 24px -6px rgba(5, 96, 251, .65); }
-.nx-card .btn-primary:active { transform: translateY(1px); }
-.nx-card .btn-primary:focus-visible { outline: 3px solid rgba(5, 96, 251, .35); outline-offset: 2px; }
-.nx-card .btn-primary[disabled] { opacity: .7; filter: none; }
-.nx-card .btn-login::after { content: "\2192"; font-size: 17px; line-height: 1; }
-
-/* secondary buttons: email link / social providers */
-.nx-card .btn-login-option,
-.nx-card .btn-default {
-	display: flex; align-items: center; justify-content: center; gap: 8px;
-	width: 100%; height: 46px; padding: 0 16px;
-	font-size: 14px; font-weight: 600; color: var(--nx-ink);
-	background: #fff; border: 1px solid var(--nx-line); border-radius: var(--nx-radius);
-	box-shadow: none; text-decoration: none;
-	transition: background .15s, border-color .15s;
-}
-.nx-card .btn-login-option:hover,
-.nx-card .btn-default:hover { background: #f5f8fe; border-color: #bccbe6; color: var(--nx-ink); }
-.nx-card .btn-login-option svg, .nx-card .btn-login-option img { height: 18px; width: auto; }
-
-.nx-card .social-logins { margin-top: 18px; }
-.nx-card .login-button-wrapper { margin-bottom: 10px; }
-.nx-card .login-divider {
-	display: flex; align-items: center; gap: 12px;
-	margin: 0 0 16px; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--nx-muted);
-}
-.nx-card .login-divider::before,
-.nx-card .login-divider::after { content: ""; flex: 1; height: 1px; background: var(--nx-line); }
-
-.nx-card .sign-up-message { margin: 18px 0 0; text-align: center; font-size: 13.5px; color: var(--nx-muted); }
-.nx-card .sign-up-message a { font-weight: 700; color: var(--nx-blue); text-decoration: none; }
-.nx-card .sign-up-message a:hover { text-decoration: underline; }
-
-/* alerts / status messages produced by login.js */
-.nx-card .page-card-body .alert,
-.nx-card .alert { border-radius: var(--nx-radius); font-size: 13px; padding: 10px 14px; }
-.nx-card .indicator { font-size: 13px; }
-
-/* ---- win over the default login stylesheet (it uses very specific selectors) ---- */
+/* ---- strip the default card / box chrome ---- */
+.nx-shell .nx-card section { margin: 0; padding: 0; background: none; box-shadow: none; border: 0; width: 100%; max-width: none; }
 .nx-shell .nx-card section .page-card {
-	padding: 0 !important; max-width: none !important; margin: 0 !important;
-	border: 0 !important; background: transparent !important; border-radius: 0 !important; box-shadow: none !important;
+	width: 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important;
+	background: transparent !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important;
 }
 .nx-shell .nx-card section .page-card form { max-width: none !important; margin: 0 !important; }
-.nx-shell .nx-card .page-card .page-card-body .form-group { margin: 0 0 14px; }
-.nx-shell .nx-card .page-card .page-card-body input[type=text],
-.nx-shell .nx-card .page-card .page-card-body input[type=email],
-.nx-shell .nx-card .page-card .page-card-body input[type=password] {
-	display: block; width: 100%; height: 48px;
-	padding: 0 16px 0 44px; margin: 0;
-	font-size: 14.5px; letter-spacing: 0; color: var(--nx-ink);
-	background: #fff; border: 1px solid var(--nx-line); border-radius: var(--nx-radius); box-shadow: none;
-}
-.nx-shell .nx-card .page-card .page-card-body .password-field input[type=password],
-.nx-shell .nx-card .page-card .page-card-body .password-field input[type=text] { padding-right: 64px; }
-.nx-shell .nx-card .page-card .page-card-body input[type=text]:focus,
-.nx-shell .nx-card .page-card .page-card-body input[type=email]:focus,
-.nx-shell .nx-card .page-card .page-card-body input[type=password]:focus {
-	background: #fff; border-color: var(--nx-blue); box-shadow: 0 0 0 4px rgba(5, 96, 251, .12); outline: none;
-}
-.nx-shell .nx-card .page-card .page-card-body.invalid input[type=text],
-.nx-shell .nx-card .page-card .page-card-body.invalid input[type=email],
-.nx-shell .nx-card .page-card .page-card-body.invalid input[type=password] { border-color: #ef4444; }
-.nx-shell .nx-card .page-card .page-card-body ::placeholder { color: #94a3b8; opacity: 1; }
-.nx-shell .nx-card .page-card .page-card-body .field-icon {
-	left: 15px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; margin: 0;
-}
-.nx-shell .nx-card .page-card .page-card-body .toggle-password {
-	right: 14px; top: 50%; transform: translateY(-50%); font-size: 12.5px; font-weight: 600; letter-spacing: 0;
-}
-.nx-shell .nx-card .page-card .page-card-body .forgot-password-message { margin: 2px 0 20px; line-height: 1.4; }
-.nx-shell .nx-card .page-card .page-card-body .forgot-password-message > * {
-	font-size: 13px; font-weight: 600; color: var(--nx-blue); letter-spacing: 0;
-}
-.nx-shell .nx-card .page-card .page-card-actions { margin-top: 0; }
-.nx-shell .nx-card .page-card .page-card-body .social-logins { margin-top: 18px; font-size: 14px; letter-spacing: 0; }
-.nx-shell .nx-card .page-card .page-card-body .social-logins .social-login-buttons { margin-top: 0; }
-.nx-shell .nx-card .page-card .page-card-body .social-logins .login-button-wrapper { min-width: 100%; padding: 0; margin-bottom: 10px; }
-.nx-shell .nx-card .page-card .page-card-body .login-divider { margin: 0 0 16px; }
-.nx-shell .nx-card .page-card .page-card-body .btn-login-option {
-	display: flex; align-items: center; justify-content: center;
-	height: 46px; font-size: 14px; font-weight: 600; letter-spacing: 0;
-	color: var(--nx-ink); background: #fff; border: 1px solid var(--nx-line); box-shadow: none;
-}
-.nx-shell .nx-card .page-card .page-card-body .btn-login-option:hover { background: #f5f8fe; border-color: #bccbe6; }
-.nx-shell .nx-card section .sign-up-message { margin: 18px 0 0; font-size: 13.5px; letter-spacing: 0; color: var(--nx-muted); }
-.nx-shell .nx-card section .sign-up-message a { color: var(--nx-blue); font-weight: 700; }
-.nx-shell .nx-card .page-card-head { padding: 0 0 22px !important; margin: 0 !important; }
-.nx-shell .nx-card .page-card-head img { max-height: 44px; }
-.nx-shell .nx-card .page-card-head h4 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -.01em; color: var(--nx-ink); }
 
-/* ----------------------------------------------------------- responsive */
+/* ---- heading block (left aligned) ---- */
+.nx-shell .nx-card .page-card-head { padding: 0 0 32px !important; margin: 0 !important; text-align: left; }
+.nx-shell .nx-card .page-card-head .app-logo { display: none; height: 28px; max-height: 28px; width: auto; margin: 0 0 40px; }
+.nx-shell .nx-card .page-card-head h4 {
+	margin: 0; font-size: 28px; line-height: 1.2; font-weight: 600; letter-spacing: -.025em; color: var(--nx-ink);
+}
+.nx-shell .nx-card .page-card-head .nx-sub { margin: 8px 0 0; font-size: 15px; line-height: 1.5; font-weight: 400; color: var(--nx-muted); }
+
+/* ---- fields ---- */
+.nx-shell .nx-card .page-card .page-card-body { padding: 0; font-weight: 400; }
+.nx-shell .nx-card .page-card .page-card-body > .email-field { margin-bottom: 20px; }
+.nx-shell .nx-card .page-card .page-card-body .form-group { margin: 0 0 20px; }
+.nx-shell .nx-card .page-card .form-group .form-label.sr-only {
+	position: static; display: block; width: auto; height: auto; margin: 0 0 8px; padding: 0;
+	overflow: visible; clip: auto; white-space: normal; border: 0;
+	font-size: 13px; font-weight: 500; letter-spacing: 0; color: var(--nx-ink-2);
+}
+.nx-shell .nx-card .email-field,
+.nx-shell .nx-card .password-field { position: relative; }
+
+.nx-shell .nx-card section .page-card .page-card-body input[type=text],
+.nx-shell .nx-card section .page-card .page-card-body input[type=email],
+.nx-shell .nx-card section .page-card .page-card-body input[type=password] {
+	display: block; width: 100%; height: 44px; margin: 0;
+	padding: 0 14px 0 42px;
+	font-size: 15px; letter-spacing: 0; color: var(--nx-ink);
+	background: var(--nx-surface); border: 1px solid var(--nx-line); border-radius: var(--nx-radius); box-shadow: none;
+	transition: border-color .15s, box-shadow .15s;
+}
+.nx-shell .nx-card section .page-card .page-card-body .password-field input[type=password],
+.nx-shell .nx-card section .page-card .page-card-body .password-field input[type=text] { padding-right: 64px; }
+.nx-shell .nx-card section .page-card .page-card-body input:hover { border-color: var(--nx-line-strong); }
+.nx-shell .nx-card section .page-card .page-card-body input:focus {
+	outline: none; background: var(--nx-surface);
+	border-color: var(--nx-accent); box-shadow: 0 0 0 3px rgba(5, 96, 251, .14);
+}
+.nx-shell .nx-card section .page-card .page-card-body.invalid input { border-color: var(--nx-danger); }
+.nx-shell .nx-card section .page-card .page-card-body ::placeholder { color: var(--nx-faint); opacity: 1; }
+.nx-shell .nx-card section .page-card .page-card-body .field-icon {
+	left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; margin: 0;
+	color: var(--nx-faint); stroke: var(--nx-faint); pointer-events: none;
+}
+.nx-shell .nx-card section .page-card .page-card-body .toggle-password {
+	right: 14px; top: 50%; transform: translateY(-50%);
+	font-size: 12px; font-weight: 500; letter-spacing: 0; color: var(--nx-muted); cursor: pointer; user-select: none;
+}
+.nx-shell .nx-card section .page-card .page-card-body .toggle-password:hover { color: var(--nx-ink); }
+
+.nx-shell .nx-card section .page-card .page-card-body .forgot-password-message { margin: -4px 0 24px; text-align: right; line-height: 1.4; }
+.nx-shell .nx-card section .page-card .page-card-body .forgot-password-message > * {
+	font-size: 13px; font-weight: 500; letter-spacing: 0; color: var(--nx-muted); text-decoration: none;
+}
+.nx-shell .nx-card section .page-card .page-card-body .forgot-password-message > *:hover { color: var(--nx-accent); }
+
+/* ---- buttons ---- */
+.nx-shell .nx-card .page-card-actions { padding: 0; margin: 0 !important; }
+.nx-shell .nx-card .btn-primary,
+.nx-shell .nx-card .btn-login,
+.nx-shell .nx-card .btn-forgot,
+.nx-shell .nx-card .btn-ldap-login {
+	display: flex; align-items: center; justify-content: center;
+	width: 100%; height: 44px; padding: 0 16px;
+	font-size: 15px; font-weight: 500; letter-spacing: -.005em; color: #fff;
+	background: var(--nx-accent); border: 0; border-radius: var(--nx-radius); box-shadow: none;
+	transition: background .15s, transform .1s;
+}
+.nx-shell .nx-card .btn-primary:hover { background: var(--nx-accent-hover); color: #fff; }
+.nx-shell .nx-card .btn-primary:active { transform: translateY(1px); }
+.nx-shell .nx-card .btn-primary:focus-visible { outline: 3px solid rgba(5, 96, 251, .3); outline-offset: 2px; }
+.nx-shell .nx-card .btn-primary[disabled] { opacity: .65; }
+
+.nx-shell .nx-card .page-card .page-card-body .btn-login-option,
+.nx-shell .nx-card .btn-default {
+	display: flex; align-items: center; justify-content: center; gap: 8px;
+	width: 100%; height: 44px; padding: 0 16px;
+	font-size: 14px; font-weight: 500; letter-spacing: 0; color: var(--nx-ink);
+	background: var(--nx-surface); border: 1px solid var(--nx-line); border-radius: var(--nx-radius); box-shadow: none; text-decoration: none;
+	transition: background .15s, border-color .15s;
+}
+.nx-shell .nx-card .page-card .page-card-body .btn-login-option:hover,
+.nx-shell .nx-card .btn-default:hover { background: #f8fafc; border-color: var(--nx-line-strong); color: var(--nx-ink); }
+.nx-shell .nx-card .btn-login-option svg, .nx-shell .nx-card .btn-login-option img { height: 16px; width: auto; }
+
+.nx-shell .nx-card .page-card .page-card-body .social-logins { margin-top: 24px; font-size: 14px; letter-spacing: 0; }
+.nx-shell .nx-card .page-card .page-card-body .social-logins .social-login-buttons { margin-top: 0; }
+.nx-shell .nx-card .page-card .page-card-body .social-logins .login-button-wrapper { min-width: 100%; padding: 0; margin-bottom: 12px; }
+.nx-shell .nx-card .page-card .page-card-body .login-divider {
+	display: flex; align-items: center; gap: 16px; margin: 0 0 20px;
+	font-size: 12px; font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--nx-faint);
+}
+.nx-shell .nx-card .login-divider::before,
+.nx-shell .nx-card .login-divider::after { content: ""; flex: 1; height: 1px; background: var(--nx-line); }
+
+/* ---- footer links ("Sign up", "Back to Login") ---- */
+.nx-shell .nx-card section .sign-up-message {
+	margin: 28px 0 0; text-align: left !important; font-size: 14px; font-weight: 400; letter-spacing: 0; color: var(--nx-muted);
+}
+.nx-shell .nx-card section .sign-up-message a { color: var(--nx-ink); font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--nx-line-strong); }
+.nx-shell .nx-card section .sign-up-message a:hover { color: var(--nx-accent); border-color: var(--nx-accent); }
+.nx-shell .nx-card .page-card-actions .sign-up-message { margin-top: 20px; }
+
+/* ---- messages from the login script ---- */
+.nx-shell .nx-card .alert { margin-bottom: 20px; padding: 10px 14px; font-size: 13px; border-radius: var(--nx-radius); }
+.nx-shell .nx-card .indicator { font-size: 13px; }
+.nx-shell .nx-card .text-muted, .nx-shell .nx-card .signup-disabled-message p { color: var(--nx-muted) !important; }
+
+/* ========================================================== responsive */
 @media (max-width: 1100px) {
-	.nx-hero { padding: 36px 36px 24px; }
+	.nx-hero-inner { padding: 40px 40px 32px; }
 }
 @media (max-width: 900px) {
 	.nx-cols { display: block; }
 	.nx-hero { display: none; }
-	.nx-panel { min-height: 100vh; justify-content: flex-start; padding-top: 8vh; }
-	.nx-card { padding: 32px 24px 26px; border-radius: 18px; }
+	.nx-panel { min-height: 100vh; padding: 32px 24px 24px; }
+	.nx-card { max-width: 420px; justify-content: flex-start; padding-top: 8vh; }
+	.nx-shell .nx-card .page-card-head .app-logo { display: block; }
 }
-@media (max-height: 760px) and (min-width: 901px) {
-	.nx-hero-logo { margin-bottom: 20px; }
-	.nx-features { gap: 10px; margin-bottom: 22px; }
-	.nx-ico { flex-basis: 44px; width: 44px; height: 44px; }
-	.nx-lede { margin-bottom: 20px; }
+@media (max-height: 700px) and (min-width: 901px) {
+	.nx-hero-inner { padding-top: 32px; padding-bottom: 28px; }
+	.nx-lede { margin-top: 14px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.nx-slide { animation: none; }
-	.nx-slide-1 { opacity: 1; }
+	.nx-slide, .nx-dots i::after, .nx-card { animation: none; }
+	.nx-slide-1 { opacity: 1; transform: none; }
+	.nx-dots { display: none; }
 	.nx-shell * { transition: none !important; }
 }
