@@ -14,7 +14,9 @@ STOCK_NAMES = {"frappe", "helpdesk", "erpnext"}
 
 # UI switches. Social sign-in (e.g. Microsoft) still works in the backend; flip this to show its button.
 SHOW_SOCIAL_LOGIN = False
-SUPPORT_EMAIL = "sriainfotech@gmail.com"  # override with site config `nxerp_support_url`
+SUPPORT_EMAIL = (
+    "sriainfotech@gmail.com"  # override with site config `nxerp_support_url`
+)
 
 no_cache = True
 
@@ -43,6 +45,7 @@ def get_context(context):
 
     context.nx_year = frappe.utils.now_datetime().year
     context.nx_css_version = _asset_version("css/nxerp-login.css")
+    context.nx_theme_version = _asset_version("css/nxerp-theme.css")
     context.nx_lang_code = frappe.local.lang or "en"
     context.nx_lang_name = _language_name(context.nx_lang_code)
     context.nx_support_url = _support_url()
@@ -57,7 +60,9 @@ def get_context(context):
 
 def _asset_version(relative_path):
     try:
-        path = frappe.get_app_path("helpdesk", "public", "nxerp_login", *relative_path.split("/"))
+        path = frappe.get_app_path(
+            "helpdesk", "public", "nxerp_login", *relative_path.split("/")
+        )
         return int(os.path.getmtime(path))
     except Exception:
         return 1
@@ -66,16 +71,22 @@ def _asset_version(relative_path):
 def _language_name(code):
     try:
         name = frappe.db.get_value("Language", code, "language_name") or "English"
-        return re.sub(r"\s*\(.*\)\s*$", "", name)  # "English (United States)" -> "English"
+        return re.sub(
+            r"\s*\(.*\)\s*$", "", name
+        )  # "English (United States)" -> "English"
     except Exception:
         return "English"
 
 
 def _support_url():
-    """"Contact IT Support" opens a Gmail compose window to the support address (works without a
-    desktop mail app). Site config `nxerp_support_url` can override it with any safe link."""
+    """ "Contact IT Support" opens a Gmail compose window to the support address (works without a
+    desktop mail app). Site config `nxerp_support_url` can override it with any safe link.
+    """
     custom = (frappe.conf.get("nxerp_support_url") or "").strip()
     if custom.lower().startswith(("mailto:", "https://", "http://", "/")):
         return custom
-    query = urlencode({"view": "cm", "fs": 1, "to": SUPPORT_EMAIL, "su": f"{BRAND} IT Support"}, quote_via=quote)
+    query = urlencode(
+        {"view": "cm", "fs": 1, "to": SUPPORT_EMAIL, "su": f"{BRAND} IT Support"},
+        quote_via=quote,
+    )
     return f"https://mail.google.com/mail/?{query}"

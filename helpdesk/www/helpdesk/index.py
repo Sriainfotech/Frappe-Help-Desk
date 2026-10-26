@@ -46,6 +46,9 @@ def get_boot():
                 "user": frappe.db.get_value("User", frappe.session.user, "time_zone")
                 or get_system_timezone(),
             },
+            "desk_theme": frappe.db.get_value(
+                "User", frappe.session.user, "desk_theme"
+            ),
             "lang": frappe.local.lang,
             "dir": "rtl" if is_rtl() else "ltr",
             "apps": frappe.get_installed_apps(),
