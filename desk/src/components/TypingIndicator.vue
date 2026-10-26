@@ -82,7 +82,7 @@ onBeforeUnmount(() => {
 .typing-dots span {
   height: 4px;
   width: 4px;
-  background-color: #6b7280;
+  background-color: var(--ink-gray-5);
   border-radius: 50%;
   animation: typing 1.4s infinite ease-in-out;
 }

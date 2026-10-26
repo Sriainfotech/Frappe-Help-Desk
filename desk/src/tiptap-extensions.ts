@@ -13,6 +13,10 @@ import { SuggestionExtension } from "frappe-ui/editor";
 import FieldAutocompleteList from "./components/Settings/SavedReplies/components/FieldAutocompleteList.vue";
 import { userFields } from "./components/Settings/SavedReplies/savedReplies";
 import { getMeta } from "./stores/meta";
+import { tokens } from "@/theme/generated/tokens";
+
+// Serialized into stored and sent HTML, where CSS variables do not resolve.
+const TABLE_BORDER = tokens.email.light.border;
 
 export interface FieldItem {
   title: string;
@@ -152,8 +156,7 @@ export const ComponentUtils: Extension = Extension.create({
             default: null,
             parseHTML: (el) => el.getAttribute("style"),
             renderHTML: () => ({
-              style:
-                "border-collapse: collapse; width: 100%; border: 1px solid #d1d5db;",
+              style: `border-collapse: collapse; width: 100%; border: 1px solid ${TABLE_BORDER};`,
             }),
           },
         },
@@ -165,7 +168,7 @@ export const ComponentUtils: Extension = Extension.create({
           style: {
             default: null,
             parseHTML: (el) => el.getAttribute("style"),
-            renderHTML: () => ({ style: "border: 1px solid #d1d5db;" }),
+            renderHTML: () => ({ style: `border: 1px solid ${TABLE_BORDER};` }),
           },
         },
       },
@@ -177,8 +180,7 @@ export const ComponentUtils: Extension = Extension.create({
             default: null,
             parseHTML: (el) => el.getAttribute("style"),
             renderHTML: () => ({
-              style:
-                "border: 1px solid #d1d5db; padding: 6px 8px; vertical-align: top; text-align: left;",
+              style: `border: 1px solid ${TABLE_BORDER}; padding: 6px 8px; vertical-align: top; text-align: left;`,
             }),
           },
         },

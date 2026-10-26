@@ -17,6 +17,7 @@ import type { LineChart } from "@/types";
 import { buildPercentageChange } from "@/utils";
 import { EChartsOption } from "echarts";
 import { createResource } from "frappe-ui";
+import { useChartTheme } from "@/theme/runtime/useChartTheme";
 import { computed, onMounted, ref, type PropType } from "vue";
 import CardBase from "../../../components/ChartCardBase.vue";
 
@@ -30,10 +31,7 @@ const props = defineProps({
 // the untranslated key: it is lowercased straight into the API period
 const currentDuration = ref("Last month");
 
-const chartColor = {
-  lineColor: "#5597F3",
-  gradientColor: { start: "#abccfc", end: "rgba(229,240,254,0)" },
-};
+const chart = useChartTheme();
 
 const chartData = computed(() => {
   const _data: LineChart = getAgentTicketsResource.fetched
@@ -57,8 +55,7 @@ const chartData = computed(() => {
 });
 
 const chartConfig = computed<EChartsOption>(() => {
-  const color = chartColor.lineColor;
-  const gradientColor = chartColor.gradientColor;
+  const { lineColor: color, gradientColor } = chart.lineTone("accent");
   return {
     xAxis: {
       type: "category",

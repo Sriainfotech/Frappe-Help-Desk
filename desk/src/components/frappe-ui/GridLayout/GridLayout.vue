@@ -85,7 +85,7 @@ const options = reactive({
 
 <style scoped>
 .vgl-layout {
-  --vgl-placeholder-bg: #b1b1b1;
+  --vgl-placeholder-bg: var(--surface-gray-5);
   --vgl-placeholder-opacity: 15%;
   --vgl-placeholder-z-index: 2;
 
@@ -95,7 +95,7 @@ const options = reactive({
   --vgl-item-dragging-opacity: 100%;
 
   --vgl-resizer-size: 10px;
-  --vgl-resizer-border-color: #444;
+  --vgl-resizer-border-color: var(--ink-gray-7);
   --vgl-resizer-border-width: 2px;
 }
 

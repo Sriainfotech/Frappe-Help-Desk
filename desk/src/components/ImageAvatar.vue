@@ -12,7 +12,7 @@
           />
           <button
             type="button"
-            class="absolute inset-0 flex cursor-pointer items-center justify-center bg-black/40 text-white opacity-0 outline-none transition focus:outline-none focus-visible:outline-none group-hover:opacity-100"
+            class="absolute inset-0 flex cursor-pointer items-center justify-center bg-black-overlay-400 text-paper opacity-0 outline-none transition focus:outline-none focus-visible:outline-none group-hover:opacity-100"
             :class="roundedClass"
             :aria-label="__('Replace image')"
             @click.prevent="openFileSelector()"

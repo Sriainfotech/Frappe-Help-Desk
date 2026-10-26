@@ -18,6 +18,7 @@ import { __ } from "@/translation";
 import { buildPercentageChange, formatTime } from "@/utils";
 import { EChartsOption } from "echarts";
 import { createResource } from "frappe-ui";
+import { useChartTheme, type ChartTone } from "@/theme/runtime/useChartTheme";
 import { computed, onMounted, ref, type PropType } from "vue";
 import CardBase from "./ChartCardBase.vue";
 
@@ -28,6 +29,8 @@ interface AverageResponseData {
 
   data: { date: string; avg_time?: number; count?: number }[];
 }
+
+const chart = useChartTheme();
 
 const props = defineProps({
   title: {
@@ -46,11 +49,8 @@ const props = defineProps({
     type: Object as PropType<AverageResponseData>,
     required: true,
   },
-  chartColor: {
-    type: Object as PropType<{
-      lineColor: string;
-      gradientColor: { start: string; end: string };
-    }>,
+  tone: {
+    type: String as PropType<ChartTone>,
     required: true,
   },
   dt: {
@@ -107,8 +107,8 @@ const chartData = computed(() => {
 });
 
 const chartConfig = computed<EChartsOption>(() => {
-  const color = props.chartColor.lineColor;
-  const gradientColor = props.chartColor.gradientColor;
+  const { lineColor: color, gradientColor } = chart.lineTone(props.tone);
+  const ui = chart.ui.value;
   return {
     xAxis: {
       type: "category",
@@ -176,7 +176,7 @@ const chartConfig = computed<EChartsOption>(() => {
                 maxUnits: 2,
               }) || "0m"
             : p.value;
-        return `<span style="font-size:12px;color:#6b7280">${p.name}: <b style="color:#374151">${value}</b></span>`;
+        return `<span style="font-size:12px;color:${ui.tooltipMuted}">${p.name}: <b style="color:${ui.tooltipStrong}">${value}</b></span>`;
       },
     },
   };

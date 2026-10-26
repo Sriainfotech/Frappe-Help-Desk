@@ -39,7 +39,7 @@
         class="flex items-center gap-1 px-2 py-1 rounded-full text-sm transition-colors"
         :class="
           reaction.current_user_reacted
-            ? 'bg-surface-blue-2 text-ink-blue-6 hover:bg-surface-blue-3'
+            ? 'bg-surface-accent-2 text-ink-accent-6 hover:bg-surface-accent-3'
             : 'bg-surface-gray-3 text-ink-gray-6 hover:bg-surface-gray-4'
         "
         @click="emit('toggle', reaction.emoji)"

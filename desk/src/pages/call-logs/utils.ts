@@ -26,9 +26,9 @@ export const statusLabelMap = {
 // statusColorMap, which stays bare because the list view feeds it to a Badge
 // as a theme.
 export const statusTextColorMap: Record<string, string> = {
-  green: "text-green-600",
-  amber: "text-amber-600",
-  red: "text-red-600",
-  gray: "text-gray-600",
-  blue: "text-blue-600",
+  green: "text-ink-green-7",
+  amber: "text-ink-amber-7",
+  red: "text-ink-red-7",
+  gray: "text-ink-gray-5",
+  blue: "text-ink-blue-7",
 };

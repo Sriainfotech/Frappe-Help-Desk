@@ -62,18 +62,18 @@ export const useTicketStatusStore = defineStore("ticketStatus", () => {
 // HD Ticket Status "color" Select.
 const dotColorMap: Record<string, string> = {
   Black: "!text-ink-gray-9",
-  Gray: "!text-gray-500",
-  Blue: "!text-blue-500",
-  Green: "!text-green-500",
-  Red: "!text-red-500",
-  Pink: "!text-pink-500",
-  Orange: "!text-orange-500",
-  Amber: "!text-amber-500",
-  Yellow: "!text-yellow-500",
-  Cyan: "!text-cyan-500",
-  Teal: "!text-teal-500",
-  Violet: "!text-violet-500",
-  Purple: "!text-purple-500",
+  Gray: "!text-ink-gray-4",
+  Blue: "!text-ink-blue-4",
+  Green: "!text-ink-green-6",
+  Red: "!text-ink-red-6",
+  Pink: "!text-ink-pink-6",
+  Orange: "!text-ink-orange-6",
+  Amber: "!text-ink-amber-6",
+  Yellow: "!text-ink-yellow-6",
+  Cyan: "!text-ink-cyan-6",
+  Teal: "!text-ink-teal-6",
+  Violet: "!text-ink-violet-6",
+  Purple: "!text-ink-purple-6",
 };
 
 export function parseColor(color: string): string {

@@ -30,18 +30,21 @@
                 :key="index"
                 :class="pane.containerClass"
               >
-                <div :class="pane.screenClass">
+                <div
+                  :class="pane.screenClass"
+                  :style="{
+                    backgroundColor: tokens[pane.tone]['surface-base'],
+                  }"
+                >
                   <div
                     class="flex gap-[3px] py-[3px] px-1 border-b"
-                    :class="
-                      pane.tone === 'light'
-                        ? 'border-gray-100'
-                        : 'border-gray-800'
-                    "
+                    :style="{
+                      borderColor: tokens[pane.tone]['outline-gray-1'],
+                    }"
                   >
-                    <div class="size-1.5 bg-[#FF5F57] rounded-full" />
-                    <div class="size-1.5 bg-[#FEBC2D] rounded-full" />
-                    <div class="size-1.5 bg-[#28C840] rounded-full" />
+                    <div class="size-1.5 bg-surface-red-6 rounded-full" />
+                    <div class="size-1.5 bg-surface-amber-6 rounded-full" />
+                    <div class="size-1.5 bg-surface-green-6 rounded-full" />
                   </div>
                   <div
                     class="flex items-start justify-between gap-2 p-2.5 pr-0 pb-1 min-h-[41px]"
@@ -69,9 +72,9 @@
                         v-for="bar in 3"
                         :key="bar"
                         class="w-full h-1.5"
-                        :class="
-                          pane.tone === 'light' ? 'bg-gray-100' : 'bg-gray-800'
-                        "
+                        :style="{
+                          backgroundColor: tokens[pane.tone]['surface-gray-2'],
+                        }"
                       />
                     </div>
                   </div>
@@ -100,7 +103,9 @@
 
 <script setup lang="ts">
 import { __ } from "@/translation";
-import { useColorScheme, type ColorScheme } from "frappe-ui";
+import { useAppTheme } from "@/theme/runtime/useAppTheme";
+import { tokens } from "@/theme/generated/tokens";
+import { type ColorScheme } from "frappe-ui";
 import { computed, type Component } from "vue";
 
 type Pane = {
@@ -123,7 +128,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{ "update:modelValue": [theme: ColorScheme] }>();
 
-const { colorScheme, setColorScheme } = useColorScheme();
+const { colorScheme, setColorScheme } = useAppTheme();
 
 const themeOptions: {
   value: ColorScheme;
@@ -139,7 +144,7 @@ const themeOptions: {
       {
         tone: "light",
         containerClass: "pl-5 pt-3.5 bg-surface-gray-2 rounded-t-[10.5px]",
-        screenClass: "bg-white rounded-tl-1",
+        screenClass: "rounded-tl-1",
       },
     ],
   },
@@ -151,7 +156,7 @@ const themeOptions: {
       {
         tone: "dark",
         containerClass: "pl-5 pt-3.5 bg-surface-gray-2 rounded-t-[10.5px]",
-        screenClass: "bg-gray-900 rounded-tl-1",
+        screenClass: "rounded-tl-1",
       },
     ],
   },
@@ -164,13 +169,13 @@ const themeOptions: {
         tone: "light",
         containerClass:
           "flex flex-1 pl-5 pt-3.5 bg-surface-gray-2 rounded-tl-[10.5px]",
-        screenClass: "bg-white rounded-tl-1 w-full",
+        screenClass: "rounded-tl-1 w-full",
       },
       {
         tone: "dark",
         containerClass:
           "flex flex-1 pl-5 pt-3.5 bg-surface-gray-3 rounded-tr-[10.5px]",
-        screenClass: "bg-gray-900 rounded-tl-1 w-full",
+        screenClass: "rounded-tl-1 w-full",
       },
     ],
   },
