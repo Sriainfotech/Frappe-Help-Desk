@@ -28,6 +28,15 @@ repos:
         types: [file]
         types_or: [javascript, vue, html]
 
+  - repo: local
+    hooks:
+      - id: theme-audit
+        name: No hardcoded colors in desk/src
+        entry: node desk/src/theme/build/audit-hardcoded.mjs
+        language: system
+        files: ^desk/src/
+        pass_filenames: false
+
   - repo: https://github.com/timothycrosley/isort
     rev: 5.12.0
     hooks:
@@ -36,5 +45,5 @@ repos:
 
 ci:
   autoupdate_schedule: weekly
-  skip: []
+  skip: [theme-audit]
   submodules: false

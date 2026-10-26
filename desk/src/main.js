@@ -56,7 +56,7 @@ function showServerMessages(msgs) {
       return;
     }
     toast(msg.message, {
-      icon: () => h(CircleAlert, { class: "text-ink-blue-5" }),
+      icon: () => h(CircleAlert, { class: "text-ink-accent-5" }),
     });
   });
 }

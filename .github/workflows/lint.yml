@@ -24,6 +24,22 @@ jobs:
           npm install @commitlint/cli @commitlint/config-conventional
           npx commitlint --verbose --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }}
 
+  theme-tokens:
+    name: Theme Tokens
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install desk dependencies
+        run: cd desk && yarn install --frozen-lockfile --ignore-scripts
+      - name: Generated files fresh, frappe-ui covered, contrast passing
+        run: cd desk && yarn theme:check
+      - name: No hardcoded colors
+        run: cd desk && yarn theme:audit
+
   linter:
     name: 'Frappe Linter'
     runs-on: ubuntu-latest

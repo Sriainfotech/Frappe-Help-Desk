@@ -1,7 +1,12 @@
 import frappeUIPreset, { content as frappeUIContent } from "frappe-ui/tailwind";
+import {
+  extend as nxerpExtend,
+  themePlugin as nxerpThemePlugin,
+} from "./src/theme/generated/tailwind-theme.mjs";
 
 export default {
   presets: [frappeUIPreset],
+  theme: { extend: nxerpExtend },
   content: [
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
@@ -12,6 +17,8 @@ export default {
     "../../frappe/ui/src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   plugins: [
+    // Keep first: user plugins are emitted after frappe-ui's preset plugins, so these variables win.
+    nxerpThemePlugin,
     require("@tailwindcss/typography"),
     require("tailwindcss-rtl"),
     function ({ addUtilities }) {
