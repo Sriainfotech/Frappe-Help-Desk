@@ -15,6 +15,7 @@ node_modules
 build/
 # the theme generator lives in a folder called build
 !desk/src/theme/build/
+!desk/src/theme/build/lib/
 develop-eggs/
 dist/
 downloads/
@@ -49,3 +50,7 @@ desk/stats.html
 e2e/.auth
 playwright-report
 test-results
+
+# the theme generator lives in folders named build/ and lib/, which the rules above ignore
+!desk/src/theme/build/
+!desk/src/theme/build/lib/
