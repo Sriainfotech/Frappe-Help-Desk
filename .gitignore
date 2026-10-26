@@ -13,6 +13,8 @@ node_modules
 # Distribution / packaging
 .Python
 build/
+# the theme generator lives in a folder called build
+!desk/src/theme/build/
 develop-eggs/
 dist/
 downloads/
