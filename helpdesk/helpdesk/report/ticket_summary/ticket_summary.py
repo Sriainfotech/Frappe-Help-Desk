@@ -10,6 +10,8 @@ from frappe import _, scrub
 from frappe.utils import flt
 from six import iteritems
 
+from helpdesk.theme_tokens import EMAIL
+
 
 def execute(filters=None):
     return TicketSummary(filters).run()
@@ -48,7 +50,7 @@ class TicketSummary:
         """Convert color name to hex value"""
         color_map = {
             "Black": "#000000",
-            "Gray": "#6b7280",
+            "Gray": EMAIL["light"]["muted"],
             "Blue": "#3b82f6",
             "Green": "#22c55e",
             "Red": "#ef4444",
@@ -61,7 +63,7 @@ class TicketSummary:
             "Violet": "#8b5cf6",
             "Purple": "#a855f7",
         }
-        return color_map.get(color_name, "#6b7280")  # Default to gray
+        return color_map.get(color_name, EMAIL["light"]["muted"])  # Default to gray
 
     def get_columns(self):
         self.columns = []
@@ -411,7 +413,7 @@ class TicketSummary:
                 {
                     "name": status,
                     "values": status_datasets[scrub(status)][:30],
-                    "color": self.status_colors.get(status, "#6b7280"),
+                    "color": self.status_colors.get(status, EMAIL["light"]["muted"]),
                 }
             )
 

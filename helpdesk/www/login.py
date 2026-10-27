@@ -43,6 +43,7 @@ def get_context(context):
 
     context.nx_year = frappe.utils.now_datetime().year
     context.nx_css_version = _asset_version("css/nxerp-login.css")
+    context.nx_theme_version = _asset_version("css/nxerp-theme.css")
     context.nx_lang_code = frappe.local.lang or "en"
     context.nx_lang_name = _language_name(context.nx_lang_code)
     context.nx_support_url = _support_url()
