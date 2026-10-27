@@ -19,13 +19,6 @@ add_to_apps_screen = [
     }
 ]
 
-# Brand logo / favicon / splash used by the desk and website pages.
-app_logo_url = "/assets/helpdesk/nxerp_login/images/nxerp-wordmark.png"
-website_context = {
-    "favicon": "/assets/helpdesk/nxerp_login/images/nxerp-favicon.png",
-    "splash_image": "/assets/helpdesk/nxerp_login/images/nxerp-wordmark.png",
-}
-
 get_site_info = "helpdesk.activation.get_site_info"
 
 after_install = "helpdesk.setup.install.after_install"
