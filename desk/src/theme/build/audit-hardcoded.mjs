@@ -101,9 +101,11 @@ function* walkServer(dir) {
   }
 }
 const serverAllow = allow.serverFiles || [];
-for (const file of walkServer(SERVER_ROOT)) {
+// desk/index.html (app shell) and vite.config.js (PWA manifest) sit outside desk/src and are audited like server output.
+for (const file of [...walkServer(SERVER_ROOT), path.join(REPO, "desk/index.html"), path.join(REPO, "desk/vite.config.js")]) {
   const r = path.relative(REPO, file).split(path.sep).join("/");
   if (r === "helpdesk/theme_tokens.py" || r.endsWith("nxerp-theme.css")) continue; // generated
+  if (r === "helpdesk/www/helpdesk/index.html") continue; // SPA build output (git-ignored); audited at desk/index.html
   if (/^helpdesk\/public\/(desk|frontend)\//.test(r)) continue; // built bundle
   if (serverAllow.some((a) => matches(r, a.path))) continue;
   fs.readFileSync(file, "utf8")
