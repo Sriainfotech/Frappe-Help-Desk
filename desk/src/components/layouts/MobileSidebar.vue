@@ -41,7 +41,7 @@ import { useRoute, useRouter } from "vue-router";
 
 import { useAuthStore } from "@/stores/auth";
 import { isCustomerPortal } from "@/utils";
-import { useTheme } from "frappe-ui";
+import { useAppTheme } from "@/theme/runtime/useAppTheme";
 import LucideMoon from "~icons/lucide/moon";
 import LucideSun from "~icons/lucide/sun";
 
@@ -51,7 +51,7 @@ import { __ } from "@/translation";
 import AppSidebar from "./AppSidebar.vue";
 import { useAgentStatusStore } from "@/stores/agentStatus";
 
-const { currentTheme, toggleTheme } = useTheme();
+const { colorScheme, toggleColorScheme } = useAppTheme();
 const { appsMenuOption } = useApps();
 const route = useRoute();
 const router = useRouter();

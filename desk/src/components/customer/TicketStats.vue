@@ -12,7 +12,6 @@
           v-if="key === 'feedback_received'"
           :title="__('Avg. Feedback Received')"
           :data="chartData"
-          bar-color="#E79913"
           measure="average"
           :timelineFilter="false"
           :dt="props.dt"
@@ -42,16 +41,13 @@
           :dt="props.dt"
           :dn="props.dn"
           orientation="horizontal"
-          bar-color="#E03636"
+          tone="red"
         />
         <LineChartCard
           v-if="key === 'avg_first_response_time'"
           :title="__('Avg. First Response Time')"
           :data="chartData"
-          :chart-color="{
-            lineColor: '#E03636',
-            gradientColor: { start: '#ee9d9f', end: 'rgba(251,232,233,0)' },
-          }"
+          tone="red"
           api-url="helpdesk.api.ticket_stats.get_avg_first_response_time"
           :dt="props.dt"
           :dn="props.dn"
@@ -61,10 +57,7 @@
           v-if="key === 'avg_resolution_time'"
           :title="__('Avg. Resolution Time')"
           :data="chartData"
-          :chart-color="{
-            lineColor: '#7263E8',
-            gradientColor: { start: '#a093ee', end: 'rgba(239, 237, 252,0)' },
-          }"
+          tone="violet"
           api-url="helpdesk.api.ticket_stats.get_avg_resolution_time"
           :dt="props.dt"
           :dn="props.dn"

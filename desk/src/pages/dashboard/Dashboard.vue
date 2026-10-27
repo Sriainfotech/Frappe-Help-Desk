@@ -203,6 +203,7 @@
 <script setup lang="ts">
 import { Link } from "@/components";
 import { useAuthStore } from "@/stores/auth";
+import { useChartTheme } from "@/theme/runtime/useChartTheme";
 import { __ } from "@/translation";
 import {
   AxisChart,
@@ -263,18 +264,8 @@ const dashboardTitle = computed(() => {
   return viewMyStats.value ? __("My Dashboard") : __("Organization Dashboard");
 });
 
-const colors = [
-  "#318AD8",
-  "#F683AE",
-  "#48BB74",
-  "#F56B6B",
-  "#FACF7A",
-  "#44427B",
-  "#5FD8C4",
-  "#F8814F",
-  "#15CCEF",
-  "#A6B1B9",
-];
+// Chart series come from the palette and follow light/dark.
+const chartTheme = useChartTheme();
 interface ChartEmptyState {
   // header of the card, shown untranslated only when the chart itself is missing
   chartTitle: string;
@@ -490,7 +481,7 @@ const loading = computed(() => {
 });
 
 function getChartType(chart: any) {
-  chart.colors = colors;
+  chart.colors = [...chartTheme.series.value];
   if (chart["type"] === "axis") {
     return h(AxisChart, {
       config: chart,

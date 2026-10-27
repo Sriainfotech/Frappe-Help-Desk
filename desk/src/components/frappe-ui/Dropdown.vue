@@ -16,7 +16,7 @@
 
       <template #body>
         <div
-          class="mt-2 min-w-40 divide-y divide-outline-elevation-2 rounded-lg bg-surface-elevation-2 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+          class="mt-2 min-w-40 divide-y divide-outline-elevation-2 rounded-lg bg-surface-elevation-2 shadow-2xl ring-1 ring-outline-gray-2 focus:outline-none"
           :class="{
             'mt-2': ['bottom', 'left', 'right'].includes(placement),
             'ms-2': placement == 'right-start',

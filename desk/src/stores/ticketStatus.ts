@@ -58,13 +58,24 @@ export const useTicketStatusStore = defineStore("ticketStatus", () => {
     getStatus,
   };
 });
+// Spelt out so Tailwind's scanner sees every class. Keys mirror the
+// HD Ticket Status "color" Select.
+const dotColorMap: Record<string, string> = {
+  Black: "!text-ink-gray-9",
+  Gray: "!text-ink-gray-4",
+  Blue: "!text-ink-blue-4",
+  Green: "!text-ink-green-6",
+  Red: "!text-ink-red-6",
+  Pink: "!text-ink-pink-6",
+  Orange: "!text-ink-orange-6",
+  Amber: "!text-ink-amber-6",
+  Yellow: "!text-ink-yellow-6",
+  Cyan: "!text-ink-cyan-6",
+  Teal: "!text-ink-teal-6",
+  Violet: "!text-ink-violet-6",
+  Purple: "!text-ink-purple-6",
+};
+
 export function parseColor(color: string): string {
-  color = color.toLowerCase();
-  let textColor = `!text-${color}-500`;
-  if (color == "black") {
-    textColor = "!text-ink-gray-9";
-  } else if (["gray", "green"].includes(color)) {
-    textColor = `!text-${color}-500`;
-  }
-  return textColor;
+  return dotColorMap[color] ?? dotColorMap.Gray;
 }

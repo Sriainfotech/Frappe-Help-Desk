@@ -22,6 +22,7 @@ import { __ } from "@/translation";
 import { buildPercentageChange } from "@/utils";
 import { EChartsOption } from "echarts";
 import { createResource } from "frappe-ui";
+import { useChartTheme, type ChartTone } from "@/theme/runtime/useChartTheme";
 import { computed, onMounted, ref, type PropType } from "vue";
 import CardBase from "./ChartCardBase.vue";
 
@@ -46,9 +47,9 @@ const props = defineProps({
     type: Object as PropType<BarChartData>,
     required: true,
   },
-  barColor: {
-    type: String,
-    default: "#3BBDE5",
+  tone: {
+    type: String as PropType<ChartTone>,
+    default: "accent",
   },
   dt: {
     type: String,
@@ -75,6 +76,8 @@ const props = defineProps({
     default: true,
   },
 });
+
+const chart = useChartTheme();
 
 const currentDuration = ref(__("Last month"));
 
@@ -122,13 +125,14 @@ const hasData = computed(() => {
 });
 
 const chartConfig = computed<EChartsOption>(() => {
-  const color = props.barColor;
+  const color = chart.tone(props.tone);
+  const ui = chart.ui.value;
 
   if (chartData.value.isStarDistribution) {
     const values = chartData.value.counts as number[];
     // rank by value descending: index 0 = highest, 4 = lowest
     const opacities = [1, 0.7, 0.5, 0.3, 0.2];
-    const baseColor = props.barColor; // #E79913
+    const baseColor = color;
 
     // unique sorted counts descending (for tie-aware rank lookup)
     const uniqueSorted = [...new Set(values)].sort((a, b) => b - a);
@@ -151,9 +155,9 @@ const chartConfig = computed<EChartsOption>(() => {
       xAxis: {
         type: "category",
         data: ["1", "2", "3", "4", "5"],
-        axisLine: { show: true, lineStyle: { color: "#ededed" } },
+        axisLine: { show: true, lineStyle: { color: ui.axisLine } },
         axisTick: { show: false },
-        axisLabel: { color: "#6b7280", fontSize: 11 },
+        axisLabel: { color: ui.axisLabel, fontSize: 11 },
       },
       yAxis: { type: "value", show: false, min: 0 },
       series: [
@@ -169,7 +173,7 @@ const chartConfig = computed<EChartsOption>(() => {
               show: true,
               position: "top" as const,
               formatter: value > 0 ? String(value) : "",
-              color: "#6b7280",
+              color: ui.valueLabel,
               fontSize: 11,
             },
           })),
@@ -197,7 +201,7 @@ const chartConfig = computed<EChartsOption>(() => {
         data: (chartData.value.counts as number[]).map((value) => ({
           value,
           itemStyle: {
-            color: value === 0 ? "#e5e7eb" : color,
+            color: value === 0 ? ui.emptyBar : color,
             borderRadius: [3, 3, 0, 0],
           },
         })),
@@ -223,7 +227,7 @@ const chartConfig = computed<EChartsOption>(() => {
       formatter: (params: any) => {
         const p = Array.isArray(params) ? params[0] : params;
         if (!p.value) return "";
-        return `<span style="font-size:12px;color:#6b7280">${p.name}: <b style="color:#374151">${p.value}</b></span>`;
+        return `<span style="font-size:12px;color:${ui.tooltipMuted}">${p.name}: <b style="color:${ui.tooltipStrong}">${p.value}</b></span>`;
       },
     },
   };
@@ -241,7 +245,10 @@ const placeholderChartConfig = computed<EChartsOption>(() => {
       {
         data: placeholderValues.map((value) => ({
           value,
-          itemStyle: { color: "#f1f1f1", borderRadius: [3, 3, 0, 0] },
+          itemStyle: {
+            color: chart.ui.value.placeholderBar,
+            borderRadius: [3, 3, 0, 0],
+          },
         })),
         type: "bar",
         barMaxWidth: 12,

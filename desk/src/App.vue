@@ -8,8 +8,9 @@
 <script setup lang="ts">
 import { Dialogs } from "@/components/dialogs";
 import { useConfigStore } from "@/stores/config";
+import { useAppTheme } from "@/theme/runtime/useAppTheme";
 import { useFavicon } from "@vueuse/core";
-import { FrappeUIProvider, setConfig, toast, useTheme } from "frappe-ui";
+import { FrappeUIProvider, setConfig, toast } from "frappe-ui";
 import { storeToRefs } from "pinia";
 import { h, onMounted } from "vue";
 import Wifi from "~icons/lucide/wifi";
@@ -22,10 +23,7 @@ const { favicon } = storeToRefs(configStore);
 
 useFavicon(favicon);
 
-if (!localStorage.getItem("theme")) {
-  localStorage.setItem("theme", "light");
-}
-useTheme();
+useAppTheme();
 
 onMounted(() => {
   window.addEventListener("online", () => {

@@ -50,7 +50,7 @@
 
     <div
       v-if="isOpen"
-      class="absolute z-50 mt-2 w-64 divide-y divide-outline-elevation-2 rounded-lg bg-surface-elevation-2 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none start-0 origin-top-left"
+      class="absolute z-50 mt-2 w-64 divide-y divide-outline-elevation-2 rounded-lg bg-surface-elevation-2 shadow-2xl ring-1 ring-outline-gray-2 focus:outline-none start-0 origin-top-left"
     >
       <!-- Header -->
       <div class="py-1.5 px-1.5">

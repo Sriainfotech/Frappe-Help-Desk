@@ -49,7 +49,7 @@ setConfig("serverMessagesHandler", (msgs) => {
     }
     toast.create({
       message: msg.message,
-      icon: h(CircleAlert, { class: "text-ink-blue-5" }),
+      icon: h(CircleAlert, { class: "text-ink-accent-5" }),
     });
   });
 });

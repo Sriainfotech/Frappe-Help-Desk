@@ -12,7 +12,7 @@
     </template>
     <template #body="{ close }">
       <div
-        class="my-2 p-1.5 min-w-40 rounded-lg bg-surface-elevation-2 shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none"
+        class="my-2 p-1.5 min-w-40 rounded-lg bg-surface-elevation-2 shadow-2xl ring-1 ring-outline-gray-2 focus:outline-none"
       >
         <div v-if="!edit">
           <Draggable

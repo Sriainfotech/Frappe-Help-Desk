@@ -98,7 +98,7 @@
                 <!-- feedback component -->
                 <TicketFeedback
                   v-if="ticket.doc?.feedback_rating"
-                  class="border-b px-6 py-3 text-base text-gray-600"
+                  class="border-b px-6 py-3 text-base text-ink-gray-6"
                   :ticket="ticket.doc"
                 />
                 <!-- SLA Section, hidden when no policy is attached -->

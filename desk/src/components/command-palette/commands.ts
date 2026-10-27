@@ -13,7 +13,7 @@ import { useAuthStore } from "@/stores/auth";
 import { useTelephonyStore } from "@/stores/telephony";
 import { parseColor } from "@/stores/ticketStatus";
 import { __ } from "@/translation";
-import { useTheme } from "frappe-ui";
+import { useAppTheme } from "@/theme/runtime/useAppTheme";
 import { GROUP, type Command } from "./paletteTypes";
 import { recentTickets } from "./recentTickets";
 import { ticketListCommands } from "./ticketListCommands";
@@ -118,7 +118,7 @@ function createCommands(): Command[] {
 }
 
 function accountCommands(): Command[] {
-  const { toggleTheme, currentTheme } = useTheme();
+  const { toggleColorScheme, colorScheme } = useAppTheme();
   return [
     {
       id: "toggle-theme",

@@ -75,7 +75,8 @@ import { useAuthStore } from "@/stores/auth";
 import { useConfigStore } from "@/stores/config";
 import { capture } from "@/telemetry";
 import { isCustomerPortal } from "@/utils";
-import { call, SidebarItem, toast, useTheme } from "frappe-ui";
+import { call, SidebarItem, toast } from "frappe-ui";
+import { useAppTheme } from "@/theme/runtime/useAppTheme";
 import {
   GettingStartedBanner,
   HelpModal,
@@ -117,7 +118,7 @@ const authStore = useAuthStore();
 const configStore = useConfigStore();
 
 const { appsMenuOption } = useApps();
-const { currentTheme, toggleTheme } = useTheme();
+const { colorScheme, toggleColorScheme } = useAppTheme();
 
 const themeMenuItem = computed(() => ({
   label: __("Toggle theme"),

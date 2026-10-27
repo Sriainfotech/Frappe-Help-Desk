@@ -34,7 +34,9 @@
           >
             <div class="flex flex-col gap-1">
               <div class="flex items-center gap-1">
-                <LucideStar class="size-4 fill-[#de9735] text-[#de9735]" />
+                <LucideStar
+                  class="size-4 fill-ink-accent-4 text-ink-accent-4"
+                />
                 <div class="text-3xl-medium text-ink-gray-8">
                   {{ chartConfig.averageRating }}
                 </div>
@@ -491,7 +493,7 @@ const barChartOptions = computed<EChartsOption>(() => {
   const mutedBarColor = cssVar("--surface-gray-4");
   const axisLineColor = cssVar("--outline-gray-1");
   const axisLabelColor = cssVar("--ink-gray-5");
-  const goldBarColor = "#de9735"; // brand rating gold, intentional
+  const goldBarColor = cssVar("--surface-accent-6");
 
   const distribution = chartConfig.value.ratingDistribution;
   const values = [1, 2, 3, 4, 5].map((star) => distribution[star] || 0);

@@ -142,14 +142,6 @@ const htmlContent = computed(
     <link rel="stylesheet" href="${cssHref.value}" />
     <base target="_blank" />
     <style>
-      :root {
-        --bg-surface-gray-3: #ededed;
-        --bg-surface-gray-4: #e2e2e2;
-      }
-      [data-theme='dark'] {
-        --bg-surface-gray-3: #343434;
-        --bg-surface-gray-4: #424242;
-      }
       .replied-content .collapse {
         margin: 10px 0 10px 0;
         visibility: visible;
@@ -159,21 +151,14 @@ const htmlContent = computed(
         font-weight: 700;
         height: 12px;
         line-height: 0.1;
-        color: #383838;
-        background: #e8eaed;
+        color: var(--ink-gray-7);
+        background: var(--surface-gray-2);
         width: 23px;
         justify-content: center;
         border-radius: 5px;
       }
       .replied-content .collapse:hover {
-        background: #dadce0;
-      }
-      [data-theme='dark'] .replied-content .collapse {
-        color: #e2e2e2;
-        background: #424242;
-      }
-      [data-theme='dark'] .replied-content .collapse:hover {
-        background: #525252;
+        background: var(--surface-gray-3);
       }
       .replied-content .collapse + input {
         display: none;

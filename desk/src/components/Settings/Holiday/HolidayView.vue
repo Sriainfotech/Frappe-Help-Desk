@@ -469,21 +469,21 @@ input[type="radio"] {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  border: 2px solid #c5c2c2;
+  border: 2px solid var(--outline-gray-3);
   border-radius: 50%;
   outline: none;
   transition: all 0.2s ease;
-  background-color: white;
+  background-color: var(--surface-base);
 }
 
 input[type="radio"]:checked {
-  background-color: black;
-  border: 2px solid #000;
+  background-color: var(--surface-gray-10);
+  border: 2px solid var(--surface-gray-10);
 }
 
 input[type="radio"]:checked::after {
   content: "";
-  background-color: #fff;
+  background-color: var(--ink-base);
 }
 
 input[type="radio"]:focus {
