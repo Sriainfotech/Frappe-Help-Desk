@@ -27,7 +27,7 @@ class TestThemeTokens(unittest.TestCase):
         from helpdesk.helpdesk.doctype.hd_settings.helpers import get_default_email_content
 
         panel = theme_tokens.EMAIL["light"]
-        for kind in ("acknowledgement", "reply_via_agent"):
+        for kind in ("reply_to_agents", "reply_via_agent"):
             html = get_default_email_content(kind)
             self.assertIn(panel["panelBg"], html, kind)
             self.assertNotIn("#f3f5f8", html, kind)
