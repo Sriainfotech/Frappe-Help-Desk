@@ -1,4 +1,8 @@
 import frappeUIPreset from "frappe-ui/tailwind";
+import {
+  extend as nxerpExtend,
+  themePlugin as nxerpThemePlugin,
+} from "./src/theme/generated/tailwind-theme.mjs";
 
 export default {
   presets: [frappeUIPreset],
@@ -14,6 +18,7 @@ export default {
   safelist: [{ pattern: /!(text|bg)-/, variants: ["hover", "active"] }],
   theme: {
     extend: {
+      ...nxerpExtend,
       height: {
         18: "68px",
       },
@@ -27,6 +32,8 @@ export default {
     },
   },
   plugins: [
+    // Keep first: user plugins are emitted after frappe-ui's preset plugins, so these variables win.
+    nxerpThemePlugin,
     require("@tailwindcss/typography"),
     require("tailwindcss-rtl"),
     function ({ addUtilities }) {

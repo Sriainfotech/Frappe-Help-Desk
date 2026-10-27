@@ -70,7 +70,8 @@ Frappe Helpdesk is an open-source ticket management tool built on the [Frappe Fr
   - Border colors: `border-outline-white`, `border-outline-gray-1` through `border-outline-gray-5`, `border-outline-black`
   - Font sizes: `text-xs`, `text-sm`, `text-base`, `text-lg`, `text-xl`, `text-2xl`, `text-3xl`
   - Multiline text: `text-p-xs`, `text-p-sm`, `text-p-base`, `text-p-lg`, `text-p-xl`, `text-p-2xl`
-- Always use gray shades for everything, never use color shades even for primary states
+- Use gray shades for neutral UI. Use the `accent` family for brand emphasis (`bg-surface-accent-6 text-ink-accent-on`, `text-ink-accent-link`). Blue is a category color, not "primary"
+- Never hardcode a color (hex, `rgb()`, or a raw palette class such as `bg-gray-900`). Colors come from `desk/src/theme` (see its README); `yarn theme:audit` enforces it
 - Implement mobile-first, responsive design with CSS Grid and Flexbox
 - Ensure styles are accessible (contrast, focus states)
 
@@ -346,6 +347,7 @@ const ticket = createDocumentResource({
 - `desk/src/pages/` — Page-level components and routes
 - `desk/src/stores/` — Pinia stores for state management
 - `desk/tailwind.config.js` — Tailwind CSS configuration with semantic tokens
+- `desk/src/theme/` — Color system: token source, generator, validators, runtime. Run `yarn theme:build` after changing a token
 - `desk/components.d.ts` — Auto-generated component type definitions
 
 ### Development

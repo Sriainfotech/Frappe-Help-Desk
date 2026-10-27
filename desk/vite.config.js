@@ -59,6 +59,9 @@ export default defineConfig(async ({ mode }) => {
           display: "standalone",
           name: "NXERP",
           short_name: "NXERP",
+          // the installed app's splash screen and system chrome use the palette's paper color
+          theme_color: "#fcfcfb",
+          background_color: "#fcfcfb",
           start_url: "/helpdesk",
           description: "NXERP - Smarter Systems for a Brighter Tomorrow",
           icons: [

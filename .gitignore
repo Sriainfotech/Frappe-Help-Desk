@@ -43,3 +43,7 @@ helpdesk/public/node_modules
 helpdesk/www/helpdesk/index.html
 desk/components.d.ts
 desk/stats.html
+
+# the theme generator lives in folders named build/ and lib/, which the rules above ignore
+!desk/src/theme/build/
+!desk/src/theme/build/lib/
