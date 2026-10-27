@@ -45,7 +45,7 @@ before first paint; the server value wins when logged in.
 ## Other surfaces
 
 - Frappe Desk (ERPNext, Framework): `generated/frappe-desk.css`, synced to the platform app (`nxerp-platform/nxerp/public/css/nxerp-desk-theme.css`) and loaded by its `app_include_css` hook, so the palette follows the platform, not one app.
-- Login: `helpdesk/www/login.html` loads `nxerp-theme.css` then `nxerp-login.css` (its CSS holds no literal colors). In Phase 2 the login moves to the platform app, which already ships `nxerp-theme.css`.
+- Login: owned by the NXERP platform app (`nxerp/www/login.*`), which loads `nxerp-theme.css` (synced into its `public/css`) then its own `nxerp-login.css`.
 - `yarn theme:build` also copies the generated CSS into `../../nxerp-platform/nxerp/public/css` (`src/theme/build/sync.mjs`). Set `NXERP_PUBLIC` to change the target.
 
 ## Known gaps

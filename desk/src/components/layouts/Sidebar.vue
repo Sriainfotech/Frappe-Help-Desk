@@ -126,7 +126,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 const { isVisible: isBannerVisible } = useBanners();
 
-const { appsMenuOption } = useApps();
+const { appsMenuOptions } = useApps();
 const { colorScheme, toggleColorScheme } = useAppTheme();
 
 const themeMenuItem = computed(() => ({
@@ -153,7 +153,7 @@ const customerPortalDropdown = computed(() => [
 ]);
 
 const agentPortalDropdown = computed(() => [
-  appsMenuOption.value,
+  ...appsMenuOptions.value,
   {
     label: __("Customer portal"),
     icon: "lucide-users",

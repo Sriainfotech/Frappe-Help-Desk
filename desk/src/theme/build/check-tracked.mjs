@@ -21,7 +21,6 @@ const ROOTS = [
   "desk/src/theme",
   "desk/tailwind.config.js",
   "desk/src/index.css",
-  "helpdesk/public/nxerp_login/css",
   "helpdesk/api/theme.py",
   "helpdesk/theme_tokens.py",
 ];
@@ -35,7 +34,6 @@ const REQUIRED = [
   "desk/src/theme/generated/tailwind-theme.mjs",
   "desk/src/theme/generated/nxerp-theme.css",
   "desk/src/theme/generated/frappe-desk.css",
-  "helpdesk/public/nxerp_login/css/nxerp-theme.css",
   "helpdesk/theme_tokens.py",
 ];
 

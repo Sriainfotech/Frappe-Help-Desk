@@ -10,13 +10,6 @@ export interface App {
   route: string;
 }
 
-const deskApp: App = {
-  name: "frappe",
-  logo: "/assets/helpdesk/desk/desk.png",
-  title: "Desk",
-  route: "/desk/helpdesk",
-};
-
 interface AppsMenuOption {
   label: string;
   icon: Component;
@@ -24,32 +17,24 @@ interface AppsMenuOption {
 }
 
 /**
- * Fetches the Frappe apps the user can switch to (Desk, ERPNext, CRM, ...) and
- * exposes them as a native Dropdown submenu option that opens on hover.
- *
- * Mirrors the apps switcher in frappe/builder (`DashboardSidebar.vue`): plain
- * `label`/`icon`/`onClick` items so reka's submenu hover-intent works cleanly.
+ * The apps this user may switch to. The list comes from `frappe.apps.get_apps`, which the NXERP platform
+ * app overrides on the server to return only the apps the user is authorised for (nxerp.launcher).
+ * The "Apps" menu is offered to multi-app users only, and always ends with a link back to the launcher.
  */
 export function useApps() {
   const resource = createResource({
     url: "frappe.apps.get_apps",
     cache: "apps",
-    // customers lack permission for get_apps (403); sidebar remounts on portal
-    // switch, so this re-evaluates for agents
+    // customers lack permission for get_apps; sidebar remounts on portal switch,
+    // so this re-evaluates for agents
     auto: !isCustomerPortal.value,
-    transform: (data: App[]) => {
-      const apps = [deskApp];
-      data.forEach((app) => {
-        if (app.name === "helpdesk") return;
-        apps.push({
-          name: app.name,
-          logo: app.logo,
-          title: app.title,
-          route: app.route,
-        });
-      });
-      return apps;
-    },
+    transform: (data: App[]) =>
+      data.map((app) => ({
+        name: app.name,
+        logo: app.logo,
+        title: app.title,
+        route: app.route,
+      })),
   });
 
   const apps = computed<App[]>(() => resource.data ?? []);
@@ -57,12 +42,26 @@ export function useApps() {
   const appsMenuOption: ComputedRef<AppsMenuOption> = computed(() => ({
     label: "Apps",
     icon: markRaw(AppsIcon),
-    submenu: apps.value.map((app) => ({
-      label: app.title,
-      icon: h("img", { src: app.logo }),
-      onClick: () => window.open(app.route, "_self"),
-    })),
+    submenu: [
+      ...apps.value
+        .filter((app) => app.name !== "helpdesk")
+        .map((app) => ({
+          label: app.title,
+          icon: h("img", { src: app.logo }),
+          onClick: () => window.open(app.route, "_self"),
+        })),
+      {
+        label: "All applications",
+        icon: markRaw(AppsIcon),
+        onClick: () => window.open("/nxerp/apps", "_self"),
+      },
+    ],
   }));
 
-  return { apps, appsMenuOption };
+  // an app switcher only makes sense when there is something to switch to
+  const appsMenuOptions = computed(() =>
+    apps.value.length > 1 ? [appsMenuOption.value] : []
+  );
+
+  return { apps, appsMenuOption, appsMenuOptions };
 }

@@ -52,7 +52,7 @@ import AppSidebar from "./AppSidebar.vue";
 import { useAgentStatusStore } from "@/stores/agentStatus";
 
 const { colorScheme, toggleColorScheme } = useAppTheme();
-const { appsMenuOption } = useApps();
+const { appsMenuOptions } = useApps();
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
@@ -103,7 +103,7 @@ const customerPortalDropdown = computed(() => [
 ]);
 
 const agentPortalDropdown = computed(() => [
-  appsMenuOption.value,
+  ...appsMenuOptions.value,
   ...(authStore.hasAgentRecord ? [availabilityMenuOption.value] : []),
   {
     label: __("Customer portal"),

@@ -1,5 +1,5 @@
 app_name = "helpdesk"
-app_title = "NXERP"
+app_title = "Helpdesk"
 app_publisher = "Frappe Technologies"
 app_description = "Customer Service Software"
 app_icon = "octicon octicon-file-directory"
@@ -13,7 +13,7 @@ add_to_apps_screen = [
     {
         "name": "helpdesk",
         "logo": "/assets/helpdesk/nxerp_login/images/nxerp-mark.png",
-        "title": "NXERP",
+        "title": "Helpdesk",
         "route": "/helpdesk",
         "has_permission": "helpdesk.api.permission.has_app_permission",
     }
