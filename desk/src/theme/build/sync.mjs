@@ -18,6 +18,10 @@ const TARGETS = [
     },
   },
   {
+    dir: path.resolve(REPO, "helpdesk"),
+    files: { "theme_tokens.py": "theme_tokens.py" },
+  },
+  {
     dir: path.resolve(REPO, "helpdesk/public/nxerp_login/css"),
     files: { "nxerp-theme.css": "nxerp-theme.css" },
   },

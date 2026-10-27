@@ -143,7 +143,9 @@
     "link": "ink-accent-link",
     "collapseBg": "surface-gray-2",
     "collapseHover": "surface-gray-3",
-    "collapseText": "ink-gray-7"
+    "collapseText": "ink-gray-7",
+    "panelBg": { "light": "palette/paper", "dark": "surface-gray-2" },
+    "panelBorder": "outline-gray-2"
   },
   "blueAlias": {
     "$comment": "The blue family is the app's primary accent (links, info, solid buttons), so it follows the accent family. Light solid fills sit on bronze steps because their text is the light ink-base.",

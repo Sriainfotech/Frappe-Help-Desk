@@ -81,6 +81,45 @@ for (const a of allow.files.filter((e) => e.unreferencedBy)) {
   }
 }
 
+// Server-side output (emails, reports, chart defaults, templates) cannot use CSS variables, so a
+// literal color there must be a palette value taken from generated/tokens.ts, or the file must be
+// allowlisted under "serverFiles" with a reason (for example brand glyphs or user-chosen color names).
+const REPO = path.resolve(THEME_DIR, "../../..");
+const SERVER_ROOT = path.join(REPO, "helpdesk");
+const SERVER_EXT = new Set([".py", ".html", ".js", ".css", ".jinja"]);
+const SERVER_SKIP = new Set(["node_modules", "tests", "desk", "locale", "translations", "__pycache__"]);
+const paletteHex = new Set(
+  [...fs.readFileSync(path.join(THEME_DIR, "generated/tokens.ts"), "utf8").matchAll(/#[0-9a-fA-F]{6}(?![0-9a-fA-F])/g)].map(
+    (m) => m[0].toLowerCase()
+  )
+);
+function* walkServer(dir) {
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (e.isDirectory()) {
+      if (!SERVER_SKIP.has(e.name)) yield* walkServer(path.join(dir, e.name));
+    } else if (SERVER_EXT.has(path.extname(e.name))) yield path.join(dir, e.name);
+  }
+}
+const serverAllow = allow.serverFiles || [];
+for (const file of walkServer(SERVER_ROOT)) {
+  const r = path.relative(REPO, file).split(path.sep).join("/");
+  if (r === "helpdesk/theme_tokens.py" || r.endsWith("nxerp-theme.css")) continue; // generated
+  if (/^helpdesk\/public\/(desk|frontend)\//.test(r)) continue; // built bundle
+  if (serverAllow.some((a) => matches(r, a.path))) continue;
+  fs.readFileSync(file, "utf8")
+    .split(String.fromCharCode(10))
+    .forEach((line, i) => {
+      for (const { kind, re } of patterns.filter((p) => p.kind !== "tailwind")) {
+        re.lastIndex = 0;
+        for (const m of line.matchAll(re)) {
+          if (/href=["']#|&#|url\(#/.test(line.slice(Math.max(0, m.index - 6), m.index + 1))) continue;
+          if (kind === "hex" && paletteHex.has(m[0].toLowerCase())) continue;
+          findings.push({ file: r, line: i + 1, kind: `server ${kind}`, text: m[0] });
+        }
+      }
+    });
+}
+
 const byFile = new Map();
 for (const f of findings) byFile.set(f.file, (byFile.get(f.file) || 0) + 1);
 if (process.argv.includes("--list"))

@@ -139,10 +139,18 @@ ${css(scale)}
 `;
 }
 
+// A role maps to a semantic token, or to {light, dark}; "palette/<anchor>" names a palette anchor.
 function pickHex(model, map, mode) {
   const flat = flatSemantic(model.semantic, mode);
+  const resolve = (token) =>
+    token.startsWith("palette/")
+      ? model.src.palette.anchors[token.slice("palette/".length)]
+      : toHex(flat[token]);
   return Object.fromEntries(
-    Object.entries(map).map(([role, token]) => [role, toHex(flat[token])])
+    Object.entries(map).map(([role, token]) => [
+      role,
+      resolve(typeof token === "object" ? token[mode] : token),
+    ])
   );
 }
 
@@ -192,6 +200,47 @@ function renderEmailJson(model) {
   );
 }
 
+// Server-side code (emails, report and chart defaults) cannot read CSS variables or tokens.ts.
+// This emits the same values as a Python module, formatted the way black would.
+const NL = String.fromCharCode(10);
+function pyLiteral(value, depth = 0) {
+  const pad = "    ".repeat(depth + 1);
+  const end = "    ".repeat(depth);
+  const lines = (items) => items.join(NL);
+  if (Array.isArray(value))
+    return `[${NL}${lines(value.map((v) => `${pad}${pyLiteral(v, depth + 1)},`))}${NL}${end}]`;
+  if (value && typeof value === "object")
+    return `{${NL}${lines(
+      Object.entries(value).map(
+        ([k, v]) => `${pad}${JSON.stringify(k)}: ${pyLiteral(v, depth + 1)},`
+      )
+    )}${NL}${end}}`;
+  if (value === null) return "None";
+  if (typeof value === "boolean") return value ? "True" : "False";
+  return JSON.stringify(value);
+}
+
+function renderThemePy(model) {
+  const series = (m) =>
+    model.src.semantic.chart.series[m].map((ref) => {
+      const [fam, shade] = ref.split("/");
+      return model.ramps[fam][m][shade];
+    });
+  const both = (map) => ({
+    light: pickHex(model, map, "light"),
+    dark: pickHex(model, map, "dark"),
+  });
+  return `# ${HEADER}
+"""Palette values for server-side code (emails, reports, chart defaults)."""
+
+EMAIL = ${pyLiteral(both(model.src.semantic.email))}
+
+CHART_SERIES = ${pyLiteral({ light: series("light"), dark: series("dark") })}
+
+CHART_UI = ${pyLiteral(both(model.src.semantic.chart.ui))}
+`;
+}
+
 export async function render() {
   const model = await buildModel();
   return {
@@ -202,6 +251,7 @@ export async function render() {
       "frappe-desk.css": renderDeskCss(model),
       "tokens.ts": renderTokensTs(model),
       "email.json": renderEmailJson(model),
+      "theme_tokens.py": renderThemePy(model),
     },
   };
 }

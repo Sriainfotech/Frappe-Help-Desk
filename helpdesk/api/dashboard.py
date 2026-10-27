@@ -8,6 +8,7 @@ from frappe.query_builder import DocType
 from frappe.query_builder.functions import Avg, Count, Function
 from pypika import Case
 
+from helpdesk.theme_tokens import CHART_SERIES
 from helpdesk.utils import agent_only, is_frappe_version
 
 HD_TICKET = "HD Ticket"
@@ -427,7 +428,7 @@ class HelpdeskDashboard:
             rated_tickets,
             y2=rating,
             seriesConfig={
-                rating: {"type": "line", "showDataPoints": True, "color": "#48BB74"}
+                rating: {"type": "line", "showDataPoints": True, "color": CHART_SERIES["light"][0]}
             },
             y2Axis={"title": _("Rating"), "min": 0, "max": 5},
         )

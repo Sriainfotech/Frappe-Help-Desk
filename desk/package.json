@@ -9,7 +9,8 @@
     "serve": "vite preview",
     "postinstall": "patch-package",
     "theme:build": "node src/theme/build/generate.mjs && node src/theme/build/sync.mjs",
-    "theme:check": "node src/theme/build/generate.mjs --check && node src/theme/build/validate-coverage.mjs && node src/theme/build/validate-contrast.mjs && node src/theme/build/sync.mjs --check",
+    "theme:check": "node src/theme/build/generate.mjs --check && node src/theme/build/validate-coverage.mjs && node src/theme/build/validate-contrast.mjs && node src/theme/build/sync.mjs --check && node src/theme/build/check-tracked.mjs",
+    "theme:tracked": "node src/theme/build/check-tracked.mjs",
     "theme:audit": "node src/theme/build/audit-hardcoded.mjs"
   },
   "dependencies": {

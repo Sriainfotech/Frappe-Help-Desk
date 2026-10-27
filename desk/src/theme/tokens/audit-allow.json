@@ -1,5 +1,5 @@
 {
-  "$comment": "Files allowed to carry literal colors, each with a reason. Keep this list short; new entries need review. unreferencedBy: the audit fails if any other source mentions that string.",
+  "$comment": "Files allowed to carry literal colors, each with a reason. Keep this list short; new entries need review. unreferencedBy: the audit fails if any other source mentions that string. serverFiles: backend files (helpdesk/**) allowed to carry literal colors that are not palette values; any other literal there must be a palette value from generated/tokens.ts.",
   "files": [
     {
       "path": "components/desk/global/CustomIcons.vue",
@@ -44,6 +44,16 @@
         "rgb/hsl"
       ],
       "reason": "Side-panel drop shadow in black alpha, an effect and not a palette color."
+    }
+  ],
+  "serverFiles": [
+    {
+      "path": "helpdesk/www/login.html",
+      "reason": "Microsoft sign-in glyph: its four brand colors are mandated by Microsoft's branding rules and are not part of the palette."
+    },
+    {
+      "path": "helpdesk/helpdesk/report/ticket_summary/ticket_summary.py",
+      "reason": "Maps Frappe's user-chosen named status colors (Blue, Red, Green, ...) to hex for the report chart. These are category colors, not brand colors; the gray default comes from the palette."
     }
   ]
 }

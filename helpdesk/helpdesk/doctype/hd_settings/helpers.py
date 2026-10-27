@@ -41,10 +41,10 @@ def get_default_email_content(type: str) -> str:
     <p style="margin-bottom: 20px">Message</p>
     <div
       style="
-        background: #f3f5f8;
+        background: #fcfcfb;
         padding: 10px;
         border-radius: 4px;
-        border: 1px solid #e5e9ee;
+        border: 1px solid #c5beb0;
       "
     >
       {{ message }}
@@ -69,10 +69,10 @@ def get_default_email_content(type: str) -> str:
     <h3 style="margin-bottom: 20px">Message</h3>
     <div
       style="
-        background: #f3f5f8;
+        background: #fcfcfb;
         padding: 10px;
         border-radius: 4px;
-        border: 1px solid #e5e9ee;
+        border: 1px solid #c5beb0;
       "
     >
       {{ message }}

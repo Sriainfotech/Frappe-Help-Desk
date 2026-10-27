@@ -4,7 +4,7 @@ from frappe.desk.form.assign_to import add as add_assign
 AUTHOR_EMAIl = "john@example.com"
 AUTHOR_NAME = "John Doe"
 CONTENT = """
-<div style="font-family: 'Segoe UI', sans-serif; font-size: 15px; line-height: 1.8; color: #374151; max-width: 560px; margin: 0 auto;">
+<div style="font-family: 'Segoe UI', sans-serif; font-size: 15px; line-height: 1.8; color: #262a2b; max-width: 560px; margin: 0 auto;">
 Hey {{ first_name }} 👋,
 <br><br>
 We thought we'd use this space to give you a quick walkthrough while you're here. 🙂
@@ -38,7 +38,7 @@ What you can do next:<br>
   <li>Invite your team and auto-assign tickets using assignment rules.</li>
   <li>Set up SLAs to manage response times for your agents.</li>
   <li>Add a Knowledge Base for self-serve support.</li>
-  <li>Check out our documentation at <a href="https://docs.frappe.io/helpdesk" style="color: #3b82f6;">https://docs.frappe.io/helpdesk</a> </li>
+  <li>Check out our documentation at <a href="https://docs.frappe.io/helpdesk" style="color: #744700;">https://docs.frappe.io/helpdesk</a> </li>
 </ul>
 <br>
 Feel free to click around and explore our product.

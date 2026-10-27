@@ -859,7 +859,9 @@ export const tokens = {
       "link": "#744700",
       "collapseBg": "#dbd7c7",
       "collapseHover": "#cfc9bb",
-      "collapseText": "#393a39"
+      "collapseText": "#393a39",
+      "panelBg": "#fcfcfb",
+      "panelBorder": "#c5beb0"
     },
     "dark": {
       "bodyBg": "#1a1e1f",
@@ -870,7 +872,9 @@ export const tokens = {
       "link": "#faa114",
       "collapseBg": "#323434",
       "collapseHover": "#3d3d3c",
-      "collapseText": "#e0dcd7"
+      "collapseText": "#e0dcd7",
+      "panelBg": "#323434",
+      "panelBorder": "#3d3d3c"
     }
   }
 } as const;
