@@ -199,11 +199,14 @@ import UserAvatar from "../UserAvatar.vue";
 interface Props {
   hideLabel?: boolean;
   ghost?: boolean;
+  // Team to restrict by when there is no ticket in context (create form)
+  team?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   hideLabel: false,
   ghost: false,
+  team: "",
 });
 
 const { hideLabel, ghost } = props;
@@ -291,6 +294,26 @@ watch(popoverIsOpen, (isOpen) => {
   }
 });
 
+// Assignee follows Team: with a Team set, only its members are offered
+const ticketTeam = computed(
+  () => ticket?.value?.doc?.agent_group || props.team
+);
+const restrictToTeam = computed(() => Boolean(ticketTeam.value));
+
+// Standalone (create form): a new Team empties a pick made for the old one
+watch(
+  () => props.team,
+  () => {
+    if (!ticket) localAssignees.value = [];
+  }
+);
+
+const teamMembers = createResource({
+  url: "helpdesk.helpdesk.doctype.hd_team.hd_team.get_team_members",
+  makeParams: () => ({ team: ticketTeam.value }),
+  onSuccess: () => reloadAgents(),
+});
+
 const agentResource = createListResource({
   doctype: "HD Agent",
   fields: [
@@ -302,21 +325,40 @@ const agentResource = createListResource({
   ],
   filters: { is_active: true },
   pageLength: 20,
-  auto: true,
 });
 
-const debouncedSearch = useDebounceFn((text: string) => {
+function reloadAgents(text = "") {
   const filters: Record<string, any> = { is_active: true };
   if (text) {
     filters.agent_name = ["like", `%${text}%`];
   }
+  if (restrictToTeam.value) {
+    filters.name = ["in", teamMembers.data || []];
+  }
   agentResource.filters = filters;
   agentResource.reload();
-}, 300);
+}
+
+const debouncedSearch = useDebounceFn(reloadAgents, 300);
+
+function isOfferable(agentName: string) {
+  return !restrictToTeam.value || teamMembers.data?.includes(agentName);
+}
 
 watch(searchText, (text) => {
   debouncedSearch(text);
 });
+
+watch(
+  [restrictToTeam, ticketTeam],
+  ([restricted]) => {
+    if (!restricted) return reloadAgents();
+    // Drop the previous team's members so none stay offerable while fetching.
+    teamMembers.reset();
+    teamMembers.fetch();
+  },
+  { immediate: true }
+);
 
 // Prefer the live status pushed over the socket (agentStatusStore.liveStatuses)
 // so the dot/tooltip reflect any agent's change made elsewhere this session,
@@ -339,7 +381,7 @@ const agentOptions = computed<AgentOption[]>(() => {
 
   // Include current agent only when not searching. Built from the session user
   // and the store's live status (seeded from auth.get_user) — no extra fetch.
-  if (!searchText.value && currentAgentName) {
+  if (!searchText.value && currentAgentName && isOfferable(currentAgentName)) {
     agents.push({
       value: currentAgentName,
       label: currentUser.value.full_name || currentAgentName,
@@ -351,7 +393,7 @@ const agentOptions = computed<AgentOption[]>(() => {
 
   if (agentResource.data) {
     for (const agent of agentResource.data) {
-      if (!seen.has(agent.name)) {
+      if (!seen.has(agent.name) && isOfferable(agent.name)) {
         agents.push({
           value: agent.name,
           label: agent.agent_name || getUser(agent.name).full_name,
