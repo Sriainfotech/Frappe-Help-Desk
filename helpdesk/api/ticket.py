@@ -1,7 +1,16 @@
 import frappe
 from frappe import _
 
+from helpdesk.helpdesk.doctype.hd_ticket_view.hd_ticket_view import HDTicketView
 from helpdesk.utils import agent_only, is_admin
+
+
+@frappe.whitelist(methods=["GET"])
+@agent_only
+def get_unseen_assignment_count() -> int:
+    """Open tickets assigned to the session user that they have not opened
+    since being assigned. Drives the count on the Tickets sidebar item."""
+    return HDTicketView.get_unseen_count(frappe.session.user)
 
 
 @frappe.whitelist()

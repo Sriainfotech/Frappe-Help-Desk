@@ -40,6 +40,7 @@ from helpdesk.utils import (
 
 from ..hd_notification.utils import clear as clear_notifications
 from ..hd_service_level_agreement.utils import get_sla
+from ..hd_ticket_view.hd_ticket_view import HDTicketView
 
 
 class HDTicket(Document):
@@ -238,6 +239,7 @@ class HDTicket(Document):
 
         self.remove_assignment_if_not_in_team()
         self.publish_update()
+        self.notify_unseen_count_change()
         self.capture_update_telemetry_events()
 
     def notify_agent(self, agent, notification_type="Assignment"):
@@ -953,6 +955,48 @@ class HDTicket(Document):
         )  # Document class method, no way to add unique_views via document settings, hence used force and unique_views=True
         self.add_seen()
         clear_notifications(ticket=self.name)
+        return self.mark_seen_by_assignee()
+
+    def mark_seen_by_assignee(self) -> bool:
+        """Clear this ticket from the session user's unseen count, only if
+        they are assigned to it. Other viewers keep using `_seen` alone.
+
+        Returns True if the ticket was counted, so the client can drop its
+        count by one without waiting for the refetch."""
+        user = frappe.session.user
+        assigned_on = frappe.db.get_value(
+            "ToDo",
+            {
+                "reference_type": "HD Ticket",
+                "reference_name": self.name,
+                "allocated_to": user,
+                "status": "Open",
+            },
+            "creation",
+            order_by="creation desc",
+        )
+        if not assigned_on:
+            return False
+
+        seen_at = frappe.db.get_value(
+            "HD Ticket View", {"ticket": self.name, "user": user}, "seen_at"
+        )
+        was_unseen = self.status_category == "Open" and (
+            not seen_at or seen_at < assigned_on
+        )
+        HDTicketView.mark(self.name, user)
+        if was_unseen:
+            HDTicketView.notify(user)
+        return was_unseen
+
+    def notify_unseen_count_change(self):
+        """Only Open tickets count, so moving in or out of Open changes the
+        assignees' badges."""
+        if not self.has_value_changed("status_category"):
+            return
+        # None when the ticket has no assignees, e.g. on insert
+        for agent in self.get_assigned_agents() or []:
+            HDTicketView.notify(agent.name)
 
     def is_valid_status_transition(self) -> bool:
         """Closing an already-resolved ticket wraps up an outcome, it is not a new one."""

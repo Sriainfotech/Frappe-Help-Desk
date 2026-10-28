@@ -33,7 +33,11 @@
               v-for="item in section.items"
               :key="item.key"
               :id="item.id"
-              :label="__(item.label)"
+              :label="
+                item.count
+                  ? `${__(item.label)} (${unseenTickets.label})`
+                  : __(item.label)
+              "
               :active="item.isActive"
               :class="item.spacedTop && 'mt-4'"
               @click="item.onClick && item.onClick()"
@@ -43,8 +47,12 @@
                   class="relative grid size-4 shrink-0 place-items-center text-ink-gray-7"
                 >
                   <component :is="item.icon" class="size-4" />
+                  <!-- a collapsed sidebar hides the label, so the count shows as a dot -->
                   <span
-                    v-if="item.key === 'notifications' && item.badge"
+                    v-if="
+                      (item.key === 'notifications' && item.badge) ||
+                      (isCollapsed && item.count)
+                    "
                     class="absolute -right-0.5 -top-0.5 size-1.5 rounded-full bg-surface-blue-5"
                   />
                 </span>
@@ -117,6 +125,7 @@ import { currentView, useView } from "@/composables/useView";
 import { useNotificationStore } from "@/stores/notification";
 import { useSidebarStore } from "@/stores/sidebar";
 import { useTelephonyStore } from "@/stores/telephony";
+import { useUnseenTicketsStore } from "@/stores/unseenTickets";
 import { __ } from "@/translation";
 import { getIcon, isCustomerPortal } from "@/utils";
 import {
@@ -149,6 +158,7 @@ const route = useRoute();
 const router = useRouter();
 const device = useDevice();
 const notificationStore = useNotificationStore();
+const unseenTickets = useUnseenTicketsStore();
 const sidebarStore = useSidebarStore();
 const { isCallingEnabled } = storeToRefs(useTelephonyStore());
 const { pinnedViews, publicViews, viewActions, handleView } = useView();
@@ -209,6 +219,10 @@ const navItems = computed(() => {
       onClick: () => selectItem(option.to, { name: option.to }),
       // Separate the nav group from the search/notification tools above it.
       spacedTop: index === 0 && !isCustomerPortal.value,
+      count:
+        !isCustomerPortal.value && option.to === "TicketsAgent"
+          ? unseenTickets.count
+          : 0,
       key: option.label,
     }));
 });

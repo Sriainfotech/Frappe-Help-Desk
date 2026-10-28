@@ -1,4 +1,5 @@
 import type { TicketAnalytics } from "@/components/ticket-agent/analytics/types";
+import { useUnseenTicketsStore } from "@/stores/unseenTickets";
 import { __ } from "@/translation";
 import type {
   DocumentResource,
@@ -30,7 +31,15 @@ export const useTicket = (ticketId: string | number): MapValue => {
         doctype: "HD Ticket",
         name: ticketId,
         whitelistedMethods: {
-          markSeen: "mark_seen",
+          markSeen: {
+            method: "mark_seen",
+            onSuccess: (wasUnseen: boolean) => {
+              if (!wasUnseen) return;
+              const unseenTickets = useUnseenTicketsStore();
+              unseenTickets.decrement();
+              unseenTickets.reload();
+            },
+          },
         },
         setValue: {
           onSuccess: () => {

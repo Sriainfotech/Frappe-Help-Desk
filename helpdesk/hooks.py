@@ -107,6 +107,10 @@ doc_events = {
     "Notification Log": {
         "before_insert": "helpdesk.extends.notification_log.before_insert",
     },
+    "ToDo": {
+        "on_update": "helpdesk.extends.todo.on_update",
+        "on_trash": "helpdesk.extends.todo.on_trash",
+    },
 }
 
 # For List View

@@ -646,3 +646,38 @@ def upload_test_file(file_name: str) -> str:
         }
     ).insert(ignore_permissions=True)
     return file_doc.name
+
+
+def assign_ticket(ticket: str, user: str):
+    """Assign through core assign_to, the path the UI, bulk assign and
+    assignment rules use, so the ToDo hooks run as in production."""
+    from frappe.desk.form.assign_to import add
+
+    add({"assign_to": [user], "doctype": "HD Ticket", "name": ticket})
+
+
+def unassign_ticket(ticket: str, user: str):
+    """Cancel `user`'s assignment on `ticket`, as the AssignTo dialog does."""
+    from frappe.desk.form.assign_to import remove
+
+    remove("HD Ticket", ticket, user)
+
+
+def clear_user_assignments(user: str):
+    """Cancel every open HD Ticket assignment of `user`, so unseen counts
+    start from zero regardless of earlier tests or assignment rules."""
+    frappe.db.set_value(
+        "ToDo",
+        {"reference_type": "HD Ticket", "allocated_to": user, "status": "Open"},
+        "status",
+        "Cancelled",
+    )
+
+
+def mark_ticket_seen_as(ticket: str, user: str):
+    """Open `ticket` as `user`, the way the agent ticket page does on mount.
+    Returns whether it cleared an unseen assignment."""
+    frappe.set_user(user)
+    was_unseen = frappe.get_doc("HD Ticket", ticket).mark_seen()
+    frappe.set_user("Administrator")
+    return was_unseen
