@@ -118,6 +118,7 @@ import { useDevice } from "@/composables";
 import { currentView, useView } from "@/composables/useView";
 import { useNotificationStore } from "@/stores/notification";
 import { useSidebarStore } from "@/stores/sidebar";
+import { useUnseenStore } from "@/stores/unseen";
 import { useTelephonyStore } from "@/stores/telephony";
 import { __ } from "@/translation";
 import { getIcon, isCustomerPortal } from "@/utils";
@@ -132,7 +133,7 @@ import {
   SidebarLabel,
 } from "frappe-ui";
 import { storeToRefs } from "pinia";
-import { computed, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import type { RouteLocationRaw } from "vue-router";
 import { useRoute, useRouter } from "vue-router";
 import LucideBell from "~icons/lucide/bell";
@@ -152,6 +153,7 @@ const router = useRouter();
 const device = useDevice();
 const notificationStore = useNotificationStore();
 const sidebarStore = useSidebarStore();
+const unseenStore = useUnseenStore();
 const { isCallingEnabled } = storeToRefs(useTelephonyStore());
 const { pinnedViews, publicViews, viewActions, handleView } = useView();
 
