@@ -17,6 +17,9 @@ from phonenumbers import PhoneNumberFormat as PNF
 from pypika.functions import Replace
 
 
+TICKET_ADMIN_ROLES = {"System Manager", "Agent Manager"}
+
+
 def check_permissions(doctype, parent, doc=None):
     user = frappe.session.user
 
@@ -53,10 +56,25 @@ def is_agent(user: str | None = None) -> bool:
     user = user or frappe.session.user
     return (
         is_admin()
-        or "Agent Manager" in frappe.get_roles(user)
-        or "Agent" in frappe.get_roles(user)
+        or bool(set(frappe.get_roles(user)) & (TICKET_ADMIN_ROLES | {"Agent"}))
         or bool(frappe.db.exists("HD Agent", {"name": user}))
     )
+
+
+def is_ticket_admin(user: str | None = None) -> bool:
+    """
+    Check whether `user` may see every ticket, whatever the team restrictions
+
+    :param user: User to check against, defaults to current user
+    :return: Whether `user` is Administrator, or a System Manager / Agent Manager
+    """
+    user = user or frappe.session.user
+    if is_admin(user):
+        return True
+    # a deactivated agent loses admin access too
+    if frappe.db.get_value("HD Agent", user, "is_active") == 0:
+        return False
+    return bool(set(frappe.get_roles(user)) & TICKET_ADMIN_ROLES)
 
 
 def get_agent_name(user: str = None) -> str | None:

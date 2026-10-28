@@ -493,6 +493,25 @@ def create_user(email: str):
     ).insert(ignore_permissions=True)
 
 
+def unique_email(prefix: str) -> str:
+    """A random example.com address starting with `prefix`."""
+    return f"{prefix}-{frappe.generate_hash(length=6)}@example.com"
+
+
+def make_agent_manager(prefix: str = "agent-manager") -> str:
+    """Create an agent with a unique email and the Agent Manager role, returning the user name."""
+    manager = make_agent(unique_email(prefix))
+    frappe.get_doc("User", manager).add_roles("Agent Manager")
+    return manager
+
+
+def make_system_manager(prefix: str = "system-manager") -> str:
+    """Create a plain user, with no HD Agent record, holding only the System Manager role."""
+    user = create_user(unique_email(prefix))
+    user.add_roles("System Manager")
+    return user.name
+
+
 def get_invitation(email: str):
     """Return the helpdesk User Invitation raised for an email, if any."""
     return frappe.db.get_value(
