@@ -9,6 +9,8 @@ export const useUnseenStore = defineStore("unseen", () => {
     url: "helpdesk.api.unseen.get_unseen_assigned_count",
     cache: "unseen-assigned-count",
     auto: false,
+    // customers and non-agents are refused by the API; a missing badge is the right outcome, not a toast
+    onError: () => {},
   });
 
   const count = computed<number>(() => Number(resource.data) || 0);

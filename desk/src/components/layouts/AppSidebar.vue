@@ -213,6 +213,8 @@ const navItems = computed(() => {
       // Separate the nav group from the search/notification tools above it.
       spacedTop: index === 0 && !isCustomerPortal.value,
       key: option.label,
+      // Agents see how many tickets assigned to them they have not opened yet
+      badge: option.to === "TicketsAgent" ? unseenStore.count : 0,
     }));
 });
 
@@ -294,6 +296,15 @@ function parseViews(views: any[]) {
 
 watch(
   () => [route.name, route.query.view],
-  () => (activeItem.value = currentRouteKey())
+  () => {
+    activeItem.value = currentRouteKey();
+    // opening a ticket marks it seen, so the unseen count may have dropped
+    if (!isCustomerPortal.value) unseenStore.refresh();
+  }
 );
+
+onMounted(() => {
+  if (!isCustomerPortal.value) unseenStore.start();
+});
+onBeforeUnmount(() => unseenStore.stop());
 </script>
