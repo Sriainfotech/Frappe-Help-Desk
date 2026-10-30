@@ -1,0 +1,14 @@
+# Local NXERP image: the CI-built base image plus the working-tree (uncommitted) helpdesk/desk changes,
+# with the frontend rebuilt inside the image. Built by build-local-image.sh; never pushed.
+ARG BASE_IMAGE=ghcr.io/sriainfotech/frappe-help-desk:nxerp-8bb287a
+FROM ${BASE_IMAGE}
+USER frappe
+COPY --chown=frappe:frappe overlay/ /home/frappe/frappe-bench/apps/helpdesk/
+# Vite reads socketio_port from common_site_config.json, which the image does not set (the compose
+# configurator sets it at runtime), so set it for the build only and restore the file afterwards.
+RUN export PATH=/home/frappe/.nvm/versions/node/v22.23.3/bin:$PATH NODE_OPTIONS=--max-old-space-size=6144 \
+ && cd /home/frappe/frappe-bench \
+ && cp sites/common_site_config.json /tmp/csc.json \
+ && bench set-config -gp socketio_port 9000 \
+ && cd apps/helpdesk/desk && npx vite build \
+ && cp /tmp/csc.json /home/frappe/frappe-bench/sites/common_site_config.json

@@ -646,3 +646,71 @@ def upload_test_file(file_name: str) -> str:
         }
     ).insert(ignore_permissions=True)
     return file_doc.name
+
+
+def create_agent_manager(email: str):
+    """Create (or fetch) an agent that also has the Agent Manager role."""
+    create_agent(email)
+    user = frappe.get_doc("User", email)
+    if "Agent Manager" not in frappe.get_roles(email):
+        user.add_roles("Agent Manager")
+    return user
+
+
+def make_task_project(project_name: str = "Test Task Project"):
+    """Create (or fetch) an HD Task Project and return its name."""
+    if frappe.db.exists("HD Task Project", project_name):
+        return project_name
+    return (
+        frappe.get_doc({"doctype": "HD Task Project", "project_name": project_name})
+        .insert(ignore_permissions=True)
+        .name
+    )
+
+
+def make_task(subject: str = "Test Task", **kwargs):
+    """Insert an HD Task as the current user, bypassing permission checks.
+    Pass checklist=[{"item": ..., "done": ...}] for checklist rows."""
+    return frappe.get_doc({"doctype": "HD Task", "subject": subject, **kwargs}).insert(
+        ignore_permissions=True
+    )
+
+
+def make_task_milestone(project: str, milestone_name: str = "Test Milestone"):
+    """Create an HD Task Milestone under `project` and return its name."""
+    return (
+        frappe.get_doc(
+            {
+                "doctype": "HD Task Milestone",
+                "milestone_name": milestone_name,
+                "project": project,
+            }
+        )
+        .insert(ignore_permissions=True)
+        .name
+    )
+
+
+def make_task_freelancer(freelancer_name: str = "Test Freelancer"):
+    """Create (or fetch) an HD Task Freelancer and return its name."""
+    if frappe.db.exists("HD Task Freelancer", freelancer_name):
+        return freelancer_name
+    return (
+        frappe.get_doc({"doctype": "HD Task Freelancer", "freelancer_name": freelancer_name})
+        .insert(ignore_permissions=True)
+        .name
+    )
+
+
+def make_plain_user(email: str):
+    """Create (or fetch) an enabled user with no Helpdesk role, to test that task APIs reject non-agents."""
+    if not frappe.db.exists("User", email):
+        frappe.get_doc(
+            {
+                "doctype": "User",
+                "email": email,
+                "first_name": email.split("@")[0],
+                "send_welcome_email": 0,
+            }
+        ).insert(ignore_permissions=True)
+    return frappe.get_doc("User", email)

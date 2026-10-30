@@ -23,7 +23,7 @@ import { telemetryPlugin } from "frappe-ui/frappe";
 import { isCustomerPortal } from "@/utils";
 import { translationPlugin } from "./translation";
 import CircleAlert from "~icons/lucide/circle-alert";
-import { initSocket } from "./socket";
+import { initSocket, socket as sharedSocket } from "./socket";
 
 const globalComponents = {
   Badge,
@@ -63,12 +63,19 @@ setConfig("fallbackErrorHandler", (error) => {
 const pinia = createPinia();
 const app = createApp(App);
 
-app.use(FrappeUI);
+// HD Task module / docker: frappe-ui's built-in initSocket dials :9000 whenever location.port is set.
+// desk creates its own same-origin socket below, so skip the plugin's one.
+app.use(FrappeUI, { socketio: false });
 app.use(spritePlugin);
 app.use(pinia);
 app.use(router);
 app.use(translationPlugin);
-app.use(telemetryPlugin, { app_name: "helpdesk" });
+// HD Task module / docker: Frappe 15.122 has no pulse `boot_config` method, so the plugin 417s on boot.
+// Off by default; set VITE_ENABLE_PULSE_TELEMETRY=true at build time once Frappe is upgraded.
+const ENABLE_PULSE_TELEMETRY = import.meta.env.VITE_ENABLE_PULSE_TELEMETRY === "true";
+if (ENABLE_PULSE_TELEMETRY) {
+  app.use(telemetryPlugin, { app_name: "helpdesk" });
+}
 
 for (const c in globalComponents) {
   app.component(c, globalComponents[c]);
@@ -91,7 +98,8 @@ if (import.meta.env.DEV) {
     app.mount("#app");
   });
 } else {
-  socket = initSocket();
+  // HD Task module / docker: reuse the socket created on import of ./socket instead of opening a second one.
+  socket = sharedSocket;
   app.config.globalProperties.$socket = socket;
   app.mount("#app");
 }

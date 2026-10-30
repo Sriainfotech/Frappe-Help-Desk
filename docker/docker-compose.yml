@@ -1,4 +1,6 @@
 version: "3.7"
+# Pinned so the existing volumes (frappe-help-desk-develop_*) are reused
+name: frappe-help-desk-develop
 services:
   mariadb:
     image: mariadb:10.8
@@ -23,9 +25,11 @@ services:
     working_dir: /home/frappe
     volumes:
       - .:/workspace
+      - frappe-bench-data:/home/frappe/frappe-bench
     ports:
       - 8000:8000
       - 9000:9000
 
 volumes:
   mariadb-data:
+  frappe-bench-data:

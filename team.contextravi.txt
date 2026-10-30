@@ -1,0 +1,173 @@
+=== 2026-10-28  Tasks module deployed to the live stack (localhost:8001, site nxerp.localhost) ===
+
+FINDINGS (why Tasks was missing on 8001)
+1. Code not in the image: 8001 ran image nxerp-8bb287a, built from the last commit before Tasks existed.
+   App code and the built frontend are baked into the image; only the sites and logs volumes are mounted,
+   not the working tree.
+2. Stale frontend build: no Tasks chunk, no /tasks route, no Tasks sidebar entry.
+3. Site not migrated: the HD Task, HD Task Project and HD Task Checklist Item DocTypes did not exist.
+4. Not the cause: no role/flag hides the Tasks sidebar entry (only Call Logs is conditional, on telephony).
+5. Port 8010 is a different thing: a throwaway test container serving the separate site hd-tests.localhost.
+   Accounts created on 8001 do not exist there.
+
+ACTIONS TAKEN (in order)
+1. Backup of nxerp.localhost (database + site config), taken before any change.
+   In the sites volume: sites/nxerp.localhost/private/backups/20261028_150540-nxerp_localhost-*
+   Copy outside Docker: C:\Users\Malladi Ravidra\nxerp-backups\20261028_pre-tasks\
+2. Built a LOCAL derived image (never pushed): frappe-help-desk-local:nxerp-8bb287a-tasks
+   = the nxerp-8bb287a image + the 21 uncommitted Task files + a rebuilt frontend (full vite build succeeded).
+   Dockerfile and overlay live in the Claude scratchpad, not in the repo.
+   Verified: 3 DocType folders, task API, Tasks chunk and /tasks route present; Ticket file byte-identical to base.
+3. docker/nxerp/.env: IMAGE changed to the local tag (old value: ghcr.io/sriainfotech/frappe-help-desk:nxerp-8bb287a).
+   `docker compose up -d` recreated the app containers (backend, websocket, both queue workers, scheduler, frontend,
+   configurator, create-site). MariaDB and both Redis containers were not restarted. No volumes or data touched.
+4. bench --site nxerp.localhost migrate: exit 0, no errors. Created the 3 DocTypes (additive). No Ticket schema change.
+   Data intact afterwards (tickets and users counts unchanged).
+5. bench clear-cache, then restarted backend, queue-short, queue-long, scheduler, websocket, frontend.
+
+VERIFIED AFTER (browser, signed in as an admin agent, read-only)
+- Sidebar order: Home > Dashboard > Tickets > Knowledge Base > Customers > Contacts > Tasks (Tasks directly after Contacts).
+- /helpdesk/tasks loads with views, filters, New task button and the empty state; sidebar click navigates there.
+- Tickets, Knowledge Base, Customers, Contacts, Home load with no 4xx/5xx and no console errors.
+- Task APIs return 200 (counts all zero, as no tasks exist yet). Tasks page made no Ticket API calls.
+NOT VERIFIED: /helpdesk/tasks/<id> detail on the live site, because no task exists there and none was created
+(creating one writes live data). It was verified end to end on the test site (hd-tests.localhost, port 8010).
+
+ROLLBACK
+- Set IMAGE in docker/nxerp/.env back to the ghcr.io value above and run `docker compose up -d`.
+- The 3 new DocTypes are additive and harmless if left. Full data restore is possible from the backup above.
+
+OPEN ITEMS
+- Everything is uncommitted. The local image exists only on this machine. For a team deploy: commit, push, let CI
+  build, pin the new tag in .env.
+- Test containers still present: hd-test-web (running, port 8010), hd-build-check and hd-baseline (stopped).
+  Test site hd-tests.localhost, scratch files dbg.py (in the old backend container, now replaced) and _seed_tmp.py
+  (hd-test-web). None deleted.
+- Credentials were shared in chat; change the passwords of the admin accounts after first login.
+
+
+=== 2026-10-28 (later)  Docker environment rebuilt from the working tree (Mode A: data preserved) ===
+
+NEW ARCHITECTURE
+- One stack, compose file docker/nxerp/compose.yaml (unchanged), project name nxerp-helpdesk, port 8001, site nxerp.localhost.
+  Start it with: cd docker/nxerp && docker compose -p nxerp-helpdesk --env-file .env up -d
+  (the -p flag matters: compose.yaml itself still says name frappe-help-desk-nxerp-v15).
+- Image: frappe-help-desk-local:nxerp-tasks = CI base image ghcr.io/sriainfotech/frappe-help-desk:nxerp-8bb287a
+  + every modified/untracked file under helpdesk/ and desk/ (21 files, all Task-related), frontend rebuilt in the image.
+  Rebuild any time with: docker/nxerp/build-local-image.sh   (Dockerfile.local sits beside it; Git is only read).
+  Verified: exactly those 21 files differ from the base image; all 151 ticket-related source files are identical.
+- Services: db (mariadb:10.6), redis-cache, redis-queue, configurator, create-site, backend, websocket, queue-short,
+  queue-long, scheduler, frontend (nginx, 8001). Volumes: nxerp-helpdesk_{db-data,sites,logs,redis-queue-data}.
+- The temporary test container on 8010 (hd-test-web) no longer exists. Tests run inside this stack against a throwaway site.
+
+BACKUPS (paths only)
+- C:\Users\Malladi Ravidra\helpdesk-backups\20261028_151449\
+    nxerp.localhost\   database dump, public + private files, site_config  (restore source used below)
+    hd-tests.localhost\ same set for the old test site (test data only)
+    source.tar.gz      working-tree archive (no node_modules)
+    env.before-rebuild previous docker/nxerp/.env  (contains secrets, keep private)
+- All dumps verified as valid gzip with SHA-256 recorded; re-verified unchanged immediately before teardown.
+- Note: nxerp.localhost never had an encryption_key in site_config.json (and the new site has none either), so none was lost.
+
+WHAT WAS DONE AND THE REAL RESULTS
+ 1. Inventory (read-only) and bench backup --with-files of nxerp.localhost -> success, copied out and checksummed.
+ 2. Restore rehearsal: created throwaway site restore-rehearsal.localhost, restored the HOST copy of the dump:
+    all counts matched (User 4, HD Ticket 1, HD Agent 1, Contact 3, Comment 3, File 3, Communication 1, HD Article 1),
+    restored login password validated, wrong password refused.
+ 3. Built the image with --no-cache: exit 0 (CSS minify warnings are pre-existing).
+ 4. Teardown, by explicit name: removed the 14 containers (11 compose + hd-test-web, hd-build-check, hd-baseline),
+    the network, the image frappe-help-desk-local:nxerp-8bb287a-tasks, and 3 anonymous volumes (with their containers).
+ 5. NOT DONE: removal of the 4 old named volumes. The tool permission layer denied the deletion as irreversible, so they
+    were left in place. They are unused, hold the OLD databases (extra safety copy), and cost disk only.
+    To delete them yourself once you are happy:
+      docker volume rm frappe-help-desk-nxerp-v15_db-data frappe-help-desk-nxerp-v15_sites frappe-help-desk-nxerp-v15_logs frappe-help-desk-nxerp-v15_redis-queue-data
+    Because they could not be removed, the new environment uses a new project name (fresh volumes) instead of reusing the old name.
+ 6. Started the new stack: db/redis healthy; create-site created a fresh nxerp.localhost (exit 0).
+ 7. bench --site nxerp.localhost --force restore (dump + public + private files): exit 0. Old site_config.json was NOT restored.
+ 8. bench --site nxerp.localhost migrate: exit 0, 0 errors; HD Task, HD Task Project, HD Task Checklist Item exist with tables;
+    clear-cache; restarted app services. Bundle contains the Tasks chunk and /tasks route.
+ 9. Counts on the rebuilt site equal the pre-backup counts above.
+
+VERIFICATION (rebuilt site, signed in as an existing admin agent)
+- Sidebar: Home > Dashboard > Tickets > Knowledge Base > Customers > Contacts > Tasks.
+- /helpdesk/tasks, Tickets, Knowledge Base, Customers, Contacts, Home: no 4xx/5xx, no console errors. Task APIs 200.
+- Task lifecycle on the main site (test record, since deleted): create TASK-0001 assigned to a second user, start, review,
+  invalid transition rejected, reviewer approves -> Completed 100%, detail page renders cleanly, delete. No HD Task left.
+  HD Ticket count, names, modified timestamps, status and subject identical before and after.
+  Footprint left: the naming counter used TASK-0001 and a Deleted Document entry.
+- Task backend tests: 50 of 50 pass on a separate throwaway site hd-tests.localhost (new, in the new stack).
+
+STILL TO DO / NOTES
+- Delete the 4 old volumes (command above) when ready.
+- Everything is uncommitted. The image is local only; for a team deploy commit, push, let CI build, pin the tag in .env.
+- New files in docker/nxerp: Dockerfile.local, build-local-image.sh (untracked). build-local-image.sh leaves its temp
+  build-context folder in the system temp directory.
+- Admin password on the rebuilt site is whatever the restored database had, not the ADMIN_PASSWORD in .env
+  (that value is only used when a brand-new site is created).
+- Ticket-suite regression run was not repeated this round (no Ticket code differs from the base image).
+
+
+=== 2026-10-29  Task module recovered into the nxerp-stable working tree (uncommitted) ===
+
+STATE
+- Branch nxerp-stable at 8bb287a86 (2 behind origin, not pulled). Nothing committed, pushed, switched or migrated.
+- Pre-existing changes preserved: .gitattributes, docker/docker-compose.yml, docker/init.sh (modified); docker/nxerp/, this file (untracked).
+
+SOURCE SEARCHED
+- Git: Task code exists only on feature/hd-task-module and refs/agents/* checkpoints. That is the NEWER variant (ticket link,
+  Working/Pending Review statuses). NOT used.
+- Docker image frappe-help-desk-local:nxerp-tasks (and the live nxerp-helpdesk-backend-1 container): the ORIGINAL variant
+  (In Progress/In Review/Blocked, no ticket field, 50 tests). USED. Files copied out of the running container into the
+  Claude scratchpad first (recovered-nxerp-tasks), then into the repo. Working-tree files are byte-identical to the image
+  copies (line endings aside).
+- Image taskdev-a2-v2 / nxerp-taskdev-* = newer variant; backups not needed.
+
+RECOVERED (from the image, new files)
+- helpdesk/api/task.py, helpdesk/api/test_task.py
+- helpdesk/helpdesk/doctype/hd_task/, hd_task_project/, hd_task_checklist_item/ (json, py, __init__)
+- desk/src/pages/tasks/: Tasks.vue, TaskDetail.vue, NewTaskDialog.vue, TaskReasonDialog.vue, TaskUser.vue, taskMeta.ts
+MERGED INTO SHARED FILES (additive only)
+- helpdesk/hooks.py: daily scheduler job, permission_query_conditions and has_permission entries for HD Task
+- helpdesk/test_utils.py: create_agent_manager, make_task_project, make_task
+- desk/src/router/index.ts: /tasks/:taskId? route
+- desk/src/components/layouts/layoutSettings.ts: Tasks sidebar entry directly after Contacts (list-checks icon)
+CREATED
+- docs/tasks.md (no earlier version of the original existed). helpdesk/www/helpdesk/index.html in the image is a build artifact, not source.
+Original-variant overlay list from build-local-image.sh = exactly these 21 files, no others.
+
+DATABASE (nxerp.localhost, read-only checks)
+- HD Task, HD Task Project, HD Task Checklist Item: DocTypes registered AND tables present (an earlier report that two were
+  unregistered was a misread of record counts). HD Task has 1 record (TASK-0001, Completed), preserved. Columns match the JSON
+  (Table field `checklist` has no column, as expected). Status options are the original six; no ticket field.
+- Migration is NOT needed for the live site to run this code, and none was run.
+
+TESTS / BUILD
+- Backend: 50 of 50 pass (bench --site hd-tests.localhost run-tests --module helpdesk.api.test_task) in the live stack's image
+  (byte-identical code), on the separate test site (own database, allow_tests on). Ticket suite NOT run.
+- py_compile of all Python files and JSON validation of the 3 DocTypes: OK.
+- Local `vite build`: cannot run (cannot resolve @framework/ui outside a bench). Docker build
+  `docker/nxerp/build-local-image.sh frappe-help-desk-local:nxerp-tasks-restored`: succeeded (3746 modules); image contains the
+  Tasks chunk and /tasks/:taskId route. New image tag only; existing tags untouched.
+- Not run: ESLint/format, browser checks.
+
+TICKET INDEPENDENCE
+- No ticket/customer field in any Task DocType; no Ticket file changed (git diff shows only the shared files above).
+- Tests assert: no ticket/customer/reference_ticket field, task lifecycle leaves tickets unchanged, creating a ticket creates no tasks.
+- Notifications use Notification Log, not HD Notification.
+
+REMAINING
+- Frontend lint and browser verification; ticket-suite regression; test coverage gaps against the brief (bulk actions,
+  filters/views/pagination, notification dedupe) to be checked and added.
+- To run the restored code live: IMAGE in docker/nxerp/.env -> frappe-help-desk-local:nxerp-tasks-restored, then
+  docker compose -p nxerp-helpdesk --env-file .env up -d, bench clear-cache. No migrate needed. Awaiting your approval for any of it.
+
+--- Update: pagination and API-authentication tests added ---
+- helpdesk/api/test_task.py: 10 new tests (60 total). Authentication: all 9 endpoints reject Guest and a role-less user with
+  no state change; endpoints are not reachable by Guest over HTTP; state-changing endpoints are POST-only; an agent with no
+  part in a task cannot read or change it; bulk_assign to a disabled user is reported as failed.
+  Pagination: page_size capped at 100 and floored at 1, page below 1 clamped, page past the end is empty with the total kept,
+  pages do not overlap and cover every task, string arguments from HTTP are accepted, totals count only visible tasks.
+- helpdesk/test_utils.py: make_plain_user helper.
+- RESULT: 60 of 60 pass on hd-tests.localhost. To run the edited test files without rebuilding the image, only test_task.py
+  and test_utils.py were docker-cp'd into the running nxerp-helpdesk-backend-1 container (container layer only; rebuilt
+  images pick them up from the working tree). Live site data not touched.

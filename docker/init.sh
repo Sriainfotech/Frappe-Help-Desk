@@ -3,7 +3,8 @@
 if [ -d "/home/frappe/frappe-bench/apps/frappe" ]; then
     echo "Bench already exists, skipping init"
     cd frappe-bench
-    bench start
+    # exec so a stopped bench never falls through to the init steps below (new-site --force is destructive)
+    exec bench start
 else
     echo "Creating new bench..."
 fi

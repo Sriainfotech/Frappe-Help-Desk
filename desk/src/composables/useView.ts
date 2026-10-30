@@ -72,6 +72,12 @@ export function useView(dt: string = null) {
   }
   callGetViews();
 
+  // Ticket views return to the ticket list; any other doctype returns to the list it is on.
+  function listRouteName() {
+    if (dt && dt !== "HD Ticket") return route.name as string;
+    return isCustomerPortal.value ? "TicketsCustomer" : "TicketsAgent";
+  }
+
   const getCurrentUserViews = computed(() =>
     views.data
       ?.filter(
@@ -312,9 +318,7 @@ export function useView(dt: string = null) {
           onClick({ close }: any) {
             if (route.query.view === _view.name) {
               router.push({
-                name: isCustomerPortal.value
-                  ? "TicketsCustomer"
-                  : "TicketsAgent",
+                name: listRouteName(),
               });
             }
             deleteView(_view.name);
@@ -406,7 +410,7 @@ export function useView(dt: string = null) {
         icon: getIcon(d.icon),
       };
       router.push({
-        name: isCustomerPortal.value ? "TicketsCustomer" : "TicketsAgent",
+        name: listRouteName(),
         query: { view: d.name },
       });
       handleViewSuccess(viewDialogConfig);
